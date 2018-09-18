@@ -65,6 +65,11 @@ class Media
     }
 
     /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
+     */
+    private $user;
+
+    /**
      * Get alt
      *
      * @return string
@@ -142,5 +147,29 @@ class Media
     public function removeFile()
     {
         unlink(__DIR__."/../../../.."."/web/".$this->fileName);
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Media
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

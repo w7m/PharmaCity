@@ -4,8 +4,11 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        ROLE_PATIENT: ROLE_PATIENT
+        ROLE_DOCTOR: ROLE_DOCTOR
+        ROLE_PHARMACY: ROLE_PHARMACY
+        ROLE_SUPPLIER: ROLE_SUPPLIER
+        ROLE_ADMIN: [ROLE_DOCTOR, ROLE_PATIENT,ROLE_PHARMACY,ROLE_SUPPLIER, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         fos_userbundle:
@@ -17,10 +20,10 @@ security:
             form_login:
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
-                default_target_path: patienthomepage
+                default_target_path: homepage
             logout:
                 path: fos_user_security_logout
-                target: patienthomepage
+                target: homepage
             anonymous:    true
 
     access_control:
@@ -28,3 +31,7 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
+        - { path: ^/patient/, role: ROLE_PATIENT }
+        - { path: ^/doctor/, role: ROLE_DOCTOR }
+        - { path: ^/pharmacy/, role: ROLE_PHARMACY}
+        - { path: ^/supplier/, role: ROLE_SUPPLIER }

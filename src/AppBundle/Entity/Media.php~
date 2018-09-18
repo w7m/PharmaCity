@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="media")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MediaRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Media
 {
@@ -23,13 +24,11 @@ class Media
     private $id;
     /**
      * @var string
-     *
      * @ORM\Column(name="alt", type="string", length=255)
      */
     private $alt;
     /**
      * @var string
-     *
      * @ORM\Column(name="path", type="string", length=255)
      */
     private $path;
@@ -64,6 +63,11 @@ class Media
 
         return $this;
     }
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
+     */
+    private $user;
 
     /**
      * Get alt
@@ -119,7 +123,7 @@ class Media
     {
         $this->setAlt("xxxxxxxx");
         $this->fileName = md5(uniqid()).".".$this->file->guessExtension();
-        $this->setPath("upload/etudiant/".$this->fileName);
+        $this->setPath("upload/picture_user/".$this->fileName);
     }
 
     /**
@@ -145,4 +149,3 @@ class Media
         unlink(__DIR__."/../../../.."."/web/".$this->fileName);
     }
 }
-

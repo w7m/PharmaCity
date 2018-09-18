@@ -7179,7 +7179,7 @@ a.bg-dark:focus, a.bg-dark:hover {
 
 .ml-auto,
 .mx-auto {
-  margin-left: 70px !important;
+  margin-left: 0px !important;
 }
 
 @media (min-width: 576px) {

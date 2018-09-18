@@ -27,12 +27,76 @@ class User extends BaseUser
      */
     private $dateAdd;
 
+    /**
+     * @ORM\Column(name="name",type="string", length=255)
+     *
+     * @Assert\NotBlank(message="Please enter your name.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=255,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long.",
+     *     groups={"Registration", "Profile"}
+     * )
+     */
+    protected $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Media",cascade={"persist","remove"})
-     * @Assert\Valid
+     * @ORM\Column(name="first_name",type="string", length=255)
+     *
+     * @Assert\NotBlank(message="Please enter your first name.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=255,
+     *     minMessage="The first name is too short.",
+     *     maxMessage="The first name is too long.",
+     *     groups={"Registration", "Profile"}
+     * )
      */
-    private $media;
+    protected $firstName;
+    /**
+     * @ORM\Column(name="adress",type="string", length=255)
+     *
+     * @Assert\NotBlank(message="Please enter your adress.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=3,
+     *     max=255,
+     *     minMessage="This adress is too short.",
+     *     maxMessage="This adress is too long.",
+     *     groups={"Registration", "Profile"}
+     * )
+     */
+     private $address;
+    /**
+     * @var int
+     * @Assert\NotBlank(message="Please enter your phone number")
+     * @Assert\Type(
+     *     type="integer",
+     *     message="phone number is not number ! "
+     * )
+     * @Assert\Length(
+     *      min = 8,
+     *      max = 8,
+     *      exactMessage = "Le numéros de la carte doit avoir que huit chiffre."
+     * )
+     * @ORM\Column(name="phone_number", type="integer", unique=true)
+     */
+
+    private $phoneNumber;
+
+
+
+    /**
+     * @var int
+     * @Assert\NotBlank(message="Please enter your CIN")
+     * @Assert\Length(
+     *      min = 7,
+     *      max = 8,
+     *      exactMessage = "Le CIN doit avoir que huit chiffre."
+     * )
+     * @ORM\Column(name="cin", type="integer", unique=true)
+     */
+    private $cin;
 
     public function __construct()
     {
@@ -63,28 +127,123 @@ class User extends BaseUser
     {
         return $this->dateAdd;
     }
-
     /**
-     * Set media
+     * Set name
      *
-     * @param \AppBundle\Entity\Media $media
+     * @param string $name
      *
      * @return User
      */
-    public function setMedia(\AppBundle\Entity\Media $media =null)
+    public function setName($name)
     {
-        $this->media = $media;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get media
+     * Get name
      *
-     * @return \AppBundle\Entity\Media
+     * @return string
      */
-    public function getMedia()
+    public function getName()
     {
-        return $this->media;
+        return $this->name;
+    }
+
+    /**
+     * Set firstName
+     *
+     * @param string $firstName
+     *
+     * @return User
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Set address
+     *
+     * @param string $address
+     *
+     * @return User
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Set phoneNumber
+     *
+     * @param integer $phoneNumber
+     *
+     * @return User
+     */
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneNumber
+     *
+     * @return integer
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Set cin
+     *
+     * @param integer $cin
+     *
+     * @return User
+     */
+    public function setCin($cin)
+    {
+        $this->cin = $cin;
+
+        return $this;
+    }
+
+    /**
+     * Get cin
+     *
+     * @return integer
+     */
+    public function getCin()
+    {
+        return $this->cin;
     }
 }

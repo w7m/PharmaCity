@@ -23,10 +23,10 @@
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light">
                 <div class="container">
-                <a class="navbar-brand logo_h" href="#"><img src="#" alt="logo"></a>
+                <a class="navbar-brand logo_h" href="{{ path('homepage') }}"><img src="#" alt="logo"></a>
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#user" aria-controls="user" aria-expanded="false" aria-label="Toggle navigation">
-                        <img src="{{ asset(app.user.media.path) }}" class="picture-user" alt="image de profil">
+                        <img src="#" class="picture-user" alt="xx">
                     </button>
                     {% else %}
                     <button class="navbar-toggler" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +42,9 @@
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <div class="collapse navbar-collapse offset visibility-menu-user-in-small-screen" id="user">
                         <ul class="nav navbar-nav  menu_nav ml-auto">
-                            <li class="nav-item"><a class="nav-link" href="#">Mon Compte</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">xxxxxxxxx</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">xxxxxxxxx</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_show') }}">Mon Compte</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_edit') }}">Modifier</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">Modifier mot de passe</a></li>
                             <li class="nav-item"><a href="{{ path('fos_user_security_logout') }}" class="nav-link" >{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                         </ul>
                     </div>
@@ -52,7 +52,7 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse offset col-lg-9" id="navbarSupportedContent">
                     <ul class="nav navbar-nav menu_nav ml-auto">
-                        <li class="nav-item active"><a class="nav-link" href="#">Home</a></li>
+                        <li class="nav-item active"><a class="nav-link" href="{{ path('homepage') }}">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">About</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Services</a>
                         <li class="nav-item submenu dropdown">
@@ -78,12 +78,12 @@
                         <div class="collapse navbar-collapse offset col-lg-2">
                             <ul class="nav navbar-nav menu_nav ml-auto">
                                 <li class="nav-item submenu dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="{{ asset(app.user.media.path) }}" class="picture-user" alt="image de profil">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img src="#" class="picture-user" alt="x">
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        <li class="nav-item"><a class="nav-link" href="#">Mon Compte</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#">xxxxxxxxx</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="#">xxxxxxxxx</a></li>
+                                    <ul class="nav navbar-nav  menu_nav ml-auto">
+                                        <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_edit') }}">{{ app.user.name }} {{ app.user.firstName }} </a></li>
+                                        <li class="nav-item"><a class="nav-link" href="{{ path('add_info') }}">Profil</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">changer mot de passe</a></li>
                                         <li class="nav-item"><a href="{{ path('fos_user_security_logout') }}" class="nav-link" >{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                                     </ul>
                                 </li>

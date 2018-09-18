@@ -1,0 +1,104 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Pharmacy
+ *
+ * @ORM\Table(name="pharmacy")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PharmacyRepository")
+ */
+class Pharmacy
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="namePharmacy", type="string", length=100, unique=true)
+     */
+    private $namePharmacy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="openingTime", type="string", length=50)
+     */
+    private $openingTime;
+
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User",cascade={"persist","remove"})
+     * @Assert\Valid
+     */
+    private $user;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set namePharmacy
+     *
+     * @param string $namePharmacy
+     *
+     * @return Pharmacy
+     */
+    public function setNamePharmacy($namePharmacy)
+    {
+        $this->namePharmacy = $namePharmacy;
+
+        return $this;
+    }
+
+    /**
+     * Get namePharmacy
+     *
+     * @return string
+     */
+    public function getNamePharmacy()
+    {
+        return $this->namePharmacy;
+    }
+
+    /**
+     * Set openingTime
+     *
+     * @param string $openingTime
+     *
+     * @return Pharmacy
+     */
+    public function setOpeningTime($openingTime)
+    {
+        $this->openingTime = $openingTime;
+
+        return $this;
+    }
+
+    /**
+     * Get openingTime
+     *
+     * @return string
+     */
+    public function getOpeningTime()
+    {
+        return $this->openingTime;
+    }
+}
+
