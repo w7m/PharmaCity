@@ -25,6 +25,12 @@ class Doctor
      * @var string
      *
      * @ORM\Column(name="specialty", type="string", length=100)
+     * @Assert\Length(
+     *     min=3,
+     *     max=255,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long.",
+     * )
      */
     private $specialty;
 
@@ -32,6 +38,8 @@ class Doctor
      * @var \DateTime
      *
      * @ORM\Column(name="graduationDate", type="date")
+     * @Assert\NotBlank(message="Veuillez remplir ce champs")
+     * @Assert\Date(message="Veuillez entrer une date valid")
      */
     private $graduationDate;
 

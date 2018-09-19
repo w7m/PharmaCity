@@ -91,3 +91,7 @@ fos_user:
             enabled: true
         form:
             type: AppBundle\Form\RegistrationType
+
+    profile:
+        form:
+            type: AppBundle\Form\ProfileType

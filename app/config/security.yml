@@ -4,10 +4,9 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_PATIENT: ROLE_PATIENT
-        ROLE_DOCTOR: ROLE_DOCTOR
-        ROLE_PHARMACY: ROLE_PHARMACY
-        ROLE_SUPPLIER: ROLE_SUPPLIER
+        ROLE_DOCTOR: [ROLE_DOCTOR]
+        ROLE_PHARMACY: [ROLE_PHARMACY]
+        ROLE_SUPPLIER: [ROLE_SUPPLIER]
         ROLE_ADMIN: [ROLE_DOCTOR, ROLE_PATIENT,ROLE_PHARMACY,ROLE_SUPPLIER, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
@@ -31,7 +30,7 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/, role: ROLE_ADMIN }
-        - { path: ^/patient/, role: ROLE_PATIENT }
+        - { path: ^/patient/, role: ROLE_USER }
         - { path: ^/doctor/, role: ROLE_DOCTOR }
         - { path: ^/pharmacy/, role: ROLE_PHARMACY}
         - { path: ^/supplier/, role: ROLE_SUPPLIER }

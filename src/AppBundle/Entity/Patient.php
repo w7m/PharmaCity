@@ -38,7 +38,7 @@ class Patient
      * @ORM\Column(name="weight", type="string", length=100)
      * @Assert\NotBlank(message="Veuillez remplir ce champs")
      * @Assert\Type(
-     *     type="integer",
+     *     type="numeric",
      *     message="Poids doit etre de type numeric"
      * )
      */
@@ -50,7 +50,7 @@ class Patient
      * @ORM\Column(name="height", type="string", length=100)
      * @Assert\NotBlank(message="Veuillez remplir ce champs")
      * @Assert\Type(
-     *     type="integer",
+     *     type="numeric",
      *     message="hauteur doit etre de type numeric"
      * )
      */

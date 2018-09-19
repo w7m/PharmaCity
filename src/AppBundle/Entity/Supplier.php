@@ -39,6 +39,10 @@ class Supplier
      * @var int
      *
      * @ORM\Column(name="bank_account_numbers", type="integer", unique=true)
+     * @Assert\Type(
+     *     type="numeric",
+     *     message="Poids doit etre de type numeric"
+     * )
      */
     private $bankAccountNumbers;
 

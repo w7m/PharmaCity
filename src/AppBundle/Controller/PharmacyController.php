@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Patient;
-use AppBundle\Form\PatientType;
+use AppBundle\Entity\Pharmacy;
+use AppBundle\Form\PharmacyType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,13 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
- * @Route("/patient", name="")
+ * @Route("/pharmacy", name="")
  */
-class PatientController extends Controller
+class PharmacyController extends Controller
 {
 
     /**
-     * @Route("/info", name="info_patient")
+     * @Route("/info", name="info_pharmacy")
      */
     public function indexAction(Request $request)
     {
@@ -25,62 +25,63 @@ class PatientController extends Controller
 
     }
     /**
-     * @Route("/addinfo", name="add_info_patient")
-     * @Security("has_role('ROLE_USER')")
+     * @Route("/addinfo", name="add_info_pharmacy")
+     * @Security("has_role('ROLE_PHARMACY')")
      */
-
     public function addInfoAction(Request $request)
     {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
-        $patient = $em->getRepository('AppBundle:Patient')->findByUser($user);
-        if ($patient)
+        $pharmacy = $em->getRepository('AppBundle:Pharmacy')->findByUser($user);
+        if ($pharmacy)
         {
-            return $this->redirectToRoute('edit_info_patient');
+            return $this->redirectToRoute('edit_info_pharmacy');
         } else {
-            $patient = new Patient();
-            $form = $this->createForm(PatientType::class, $patient);
+            $pharmacy = new Pharmacy();
+            $form = $this->createForm(PharmacyType::class, $pharmacy);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $patient->setUser($this->getUser());
-                $em->persist($patient);
+                $pharmacy->setUser($this->getUser());
+                $em->persist($pharmacy);
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
                 return $this->redirectToRoute('homepage');
             }
-            return $this->render('@App/Patient/add_patient.html.twig', array(
+            return $this->render('@App/Pharmacy/add_pharmacy.html.twig', array(
                 'form' => $form->createView(),
             ));
         }
     }
 
     /**
-     * @Route("/editinfo", name="edit_info_patient")
-     * @Security("has_role('ROLE_USER')")
+     * @Route("/editinfo", name="edit_info_pharmacy")
+     * @Security("has_role('ROLE_PHARMACY')")
      */
     public function editInfoAction(Request $request)
     {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
-        $patient = $em->getRepository('AppBundle:Patient')->findOneBy(array('user'=>$user));
-        if ($patient)
+        $pharmacy = $em->getRepository('AppBundle:Pharmacy')->findOneBy(array('user'=>$user));
+        if ($pharmacy)
         {
-            $form = $this->createForm(PatientType::class, $patient);
+            $form = $this->createForm(PharmacyType::class, $pharmacy);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $patient->setUser($this->getUser());
+                $pharmacy->setUser($this->getUser());
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
                 return $this->redirectToRoute('homepage');
             }
-            return $this->render('@App/Patient/add_patient.html.twig', array(
+            return $this->render('@App/Pharmacy/add_pharmacy.html.twig', array(
                 'form' => $form->createView(),
             ));
         } else {
-            return $this->redirectToRoute('edit_add_patient');
+            return $this->redirectToRoute('edit_add_pharmacy');
         }
 
     }
+
+
 }

@@ -42,9 +42,18 @@
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <div class="collapse navbar-collapse offset visibility-menu-user-in-small-screen" id="user">
                         <ul class="nav navbar-nav  menu_nav ml-auto">
-                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_show') }}">Mon Compte</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_edit') }}">Modifier</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">Modifier mot de passe</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_edit') }}">{{ app.user.name }} {{ app.user.firstName }} </a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{ path('add_info_patient') }}">Profil</a></li>
+                            {% if is_granted('ROLE_DOCTOR') %}
+                                <li class="nav-item"><a class="nav-link" href="{{ path('add_info_doctor') }}">MON COMPTE</a></li>
+                            {% endif %}
+                            {% if is_granted('ROLE_PHARMACY') %}
+                                <li class="nav-item"><a class="nav-link" href="{{ path('add_info_pharmacy') }}">MON COMPTE</a></li>
+                            {% endif %}
+                            {% if is_granted('ROLE_SUPPLIER') %}
+                                <li class="nav-item"><a class="nav-link" href="{{ path('add_info_supplier') }}">MON COMPTE</a></li>
+                            {% endif %}
+                            <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mot de passe</a></li>
                             <li class="nav-item"><a href="{{ path('fos_user_security_logout') }}" class="nav-link" >{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                         </ul>
                     </div>
@@ -82,8 +91,17 @@
                                     </a>
                                     <ul class="nav navbar-nav  menu_nav ml-auto">
                                         <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_edit') }}">{{ app.user.name }} {{ app.user.firstName }} </a></li>
-                                        <li class="nav-item"><a class="nav-link" href="{{ path('add_info') }}">Profil</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">changer mot de passe</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="{{ path('add_info_patient') }}">Profil</a></li>
+                                        {% if is_granted('ROLE_DOCTOR') %}
+                                            <li class="nav-item"><a class="nav-link" href="{{ path('add_info_doctor') }}">MON COMPTE</a></li>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_PHARMACY') %}
+                                            <li class="nav-item"><a class="nav-link" href="{{ path('add_info_pharmacy') }}">MON COMPTE</a></li>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_SUPPLIER') %}
+                                            <li class="nav-item"><a class="nav-link" href="{{ path('add_info_supplier') }}">MON COMPTE</a></li>
+                                        {% endif %}
+                                        <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mot de passe</a></li>
                                         <li class="nav-item"><a href="{{ path('fos_user_security_logout') }}" class="nav-link" >{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                                     </ul>
                                 </li>

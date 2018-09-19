@@ -16,7 +16,11 @@ class PatientType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('dateBirth',DateType::class,array('label'=>'Date de naissance '))
+        $date=new \DateTime();
+        $years = (INTEGER)$date->format('Y');
+        $builder->add('dateBirth',DateType::class,array('label'=>'Date de naissance ',
+                                                                    'years' => range(1970,$years))
+        )
                 ->add('weight',TextType::class,array('label'=>'Poids '))
                 ->add('height',TextType::class,array('label'=>'Hauteur '))
                 ->add('Envoyer',SubmitType::class);
