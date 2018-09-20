@@ -27,7 +27,7 @@ private $router;
     if ($currentRoute == "fos_user_security_login"  OR  $currentRoute == "fos_user_registration_register") {
        if ($this->securityautorization->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
 
-        $event->setResponse(  new RedirectResponse($this->router->generate('patienthomepage')));
+        $event->setResponse(  new RedirectResponse($this->router->generate('homepage')));
 
        }
 

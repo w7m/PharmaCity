@@ -13,13 +13,15 @@ class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name',TextType::class,array('label'=>'Nom'))
+        $builder->add('name',TextType::class,array(
+                    'label'=>'Nom'))
                 ->add('firstName',TextType::class,array('label'=>'Prénom '))
-                ->add('cin',IntegerType::class ,
-                    array('label'=>'CIN '))
-                ->add('address',TextareaType::class,array('label'=>'Adresse '))
-                ->add('phoneNumber',IntegerType::class ,
-                    array('label'=>'Numéros de téléphone '))
+                ->add('cin',IntegerType::class , array(
+                    'label'=>'CIN '))
+                ->add('address',TextareaType::class,array(
+                    'label'=>'Adresse '))
+                ->add('phoneNumber',IntegerType::class ,array(
+                    'label'=>'Numéros de téléphone '))
         ;
     }
     public function getParent()

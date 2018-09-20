@@ -51,8 +51,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: eventuserredirect }
 
-    app_user.registration_listener:
-        class: AppBundle\Eventsuser\RegistrationListener
-        arguments:
-        tags:
-            - { name: Kernel.event_subscriber }
+#    app_user.registration_listener:
+#        class: AppBundle\Eventsuser\RegistrationListener
+#        arguments:
+#        tags:
+#            - { name: Kernel.event_subscriber }

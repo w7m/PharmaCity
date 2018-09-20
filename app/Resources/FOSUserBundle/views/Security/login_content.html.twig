@@ -3,7 +3,9 @@
 {% if error %}
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
-
+<div class="row" >
+    <div class="offset-lg-4 col-lg-4 offset-4 ">
+        <h3>Connectez-vous</h3>
 <form action="{{ path("fos_user_security_check") }}" method="post">
 
         {% if csrf_token %}
@@ -25,3 +27,5 @@
         <input type="submit" id="_submit" name="_submit" class="btn btn-primary" value="{{ 'security.login.submit'|trans }}" />
     </div>
 </form>
+    </div>
+</div>
