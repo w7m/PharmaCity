@@ -25,14 +25,21 @@ class Pharmacy
     /**
      * @var string
      *
-     * @ORM\Column(name="namePharmacy", type="string", length=100, unique=true)
+     * @ORM\Column(name="name_pharmacy", type="string", length=100, unique=true)
+     * @Assert\NotBlank(message="Entrez le nom de votre pharmacy .")
+     * @Assert\Length(
+     *     min=3,
+     *     max=150,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long."
+     * )
      */
     private $namePharmacy;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="openingTime", type="string", length=50)
+     * @Assert\NotBlank(message="Entrez si vous êtes pharmacy jour ou nuit .")
+     * @ORM\Column(name="opening_time", type="string", length=50)
      */
     private $openingTime;
 
@@ -43,11 +50,22 @@ class Pharmacy
      */
     private $user;
 
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prescription",mappedBy="pharmacy")
+     *
+     */
+    private $prescription;
+
     /**
      * Get id
      *
      * @return int
      */
+
+
+
     public function getId()
     {
         return $this->id;
@@ -100,5 +118,28 @@ class Pharmacy
     {
         return $this->openingTime;
     }
-}
 
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Pharmacy
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

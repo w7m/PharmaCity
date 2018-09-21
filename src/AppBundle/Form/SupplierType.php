@@ -15,7 +15,7 @@ class SupplierType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('nameSociety',TextType::class,array('label'=>'Nom de la societé'))
+        $builder->add('nameSociety',TextType::class,array('label'=>'Nom de la société'))
                 ->add('bankAccountNumbers',TextType::class,array('label'=>'RIB'))
                 ->add('Envoyer',SubmitType::class);
     }/**

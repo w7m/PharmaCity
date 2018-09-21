@@ -36,10 +36,10 @@ class Doctor
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="graduationDate", type="date")
+     * @return \DateTime
+     * @ORM\Column(name="graduationDate", type="datetime")
      * @Assert\NotBlank(message="Veuillez remplir ce champs")
-     * @Assert\Date(message="Veuillez entrer une date valid")
+     * @Assert\Type(type="\DateTime",message="Veuillez entrer une date valid")
      */
     private $graduationDate;
 
@@ -48,6 +48,15 @@ class Doctor
      * @Assert\Valid
      */
     private $user;
+
+
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prescription",mappedBy="doctor")
+     *
+     */
+    private $prescription;
 
 
     /**
@@ -129,5 +138,46 @@ class Doctor
     public function getUser()
     {
         return $this->user;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->prescription = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add prescription
+     *
+     * @param \AppBundle\Entity\Prescription $prescription
+     *
+     * @return Doctor
+     */
+    public function addPrescription(\AppBundle\Entity\Prescription $prescription)
+    {
+        $this->prescription[] = $prescription;
+
+        return $this;
+    }
+
+    /**
+     * Remove prescription
+     *
+     * @param \AppBundle\Entity\Prescription $prescription
+     */
+    public function removePrescription(\AppBundle\Entity\Prescription $prescription)
+    {
+        $this->prescription->removeElement($prescription);
+    }
+
+    /**
+     * Get prescription
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPrescription()
+    {
+        return $this->prescription;
     }
 }

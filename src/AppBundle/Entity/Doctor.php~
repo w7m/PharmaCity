@@ -25,13 +25,21 @@ class Doctor
      * @var string
      *
      * @ORM\Column(name="specialty", type="string", length=100)
+     * @Assert\Length(
+     *     min=3,
+     *     max=255,
+     *     minMessage="The name is too short.",
+     *     maxMessage="The name is too long.",
+     * )
      */
     private $specialty;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="graduationDate", type="date")
+     * @return \DateTime
+     * @ORM\Column(name="graduationDate", type="datetime")
+     * @Assert\NotBlank(message="Veuillez remplir ce champs")
+     * @Assert\Type(type="\DateTime",message="Veuillez entrer une date valid")
      */
     private $graduationDate;
 
@@ -40,6 +48,15 @@ class Doctor
      * @Assert\Valid
      */
     private $user;
+
+
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prescription",mappedBy="doctor")
+     *
+     */
+    private $prescription;
 
 
     /**
@@ -99,5 +116,27 @@ class Doctor
     {
         return $this->graduationDate;
     }
-}
 
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Doctor
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

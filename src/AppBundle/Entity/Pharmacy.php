@@ -50,11 +50,22 @@ class Pharmacy
      */
     private $user;
 
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prescription",mappedBy="pharmacy")
+     *
+     */
+    private $prescription;
+
     /**
      * Get id
      *
      * @return int
      */
+
+
+
     public function getId()
     {
         return $this->id;
@@ -130,5 +141,46 @@ class Pharmacy
     public function getUser()
     {
         return $this->user;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->prescription = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add prescription
+     *
+     * @param \AppBundle\Entity\Prescription $prescription
+     *
+     * @return Pharmacy
+     */
+    public function addPrescription(\AppBundle\Entity\Prescription $prescription)
+    {
+        $this->prescription[] = $prescription;
+
+        return $this;
+    }
+
+    /**
+     * Remove prescription
+     *
+     * @param \AppBundle\Entity\Prescription $prescription
+     */
+    public function removePrescription(\AppBundle\Entity\Prescription $prescription)
+    {
+        $this->prescription->removeElement($prescription);
+    }
+
+    /**
+     * Get prescription
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPrescription()
+    {
+        return $this->prescription;
     }
 }

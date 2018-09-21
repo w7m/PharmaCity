@@ -25,7 +25,10 @@ class Patient
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DateBirth", type="date")
+     * @ORM\Column(name="Date_birth", type="date")
+     * @Assert\NotBlank(message="Veuillez remplir ce champs")
+     * @Assert\Date(message="Veuillez entrer une date valid")
+     * @ORM\Column(name="datebirth", type="datetime")
      */
     private $dateBirth;
 
@@ -33,6 +36,11 @@ class Patient
      * @var string
      *
      * @ORM\Column(name="weight", type="string", length=100)
+     * @Assert\NotBlank(message="Veuillez remplir ce champs")
+     * @Assert\Type(
+     *     type="numeric",
+     *     message="Poids doit etre de type numeric"
+     * )
      */
     private $weight;
 
@@ -40,6 +48,11 @@ class Patient
      * @var string
      *
      * @ORM\Column(name="height", type="string", length=100)
+     * @Assert\NotBlank(message="Veuillez remplir ce champs")
+     * @Assert\Type(
+     *     type="numeric",
+     *     message="hauteur doit etre de type numeric"
+     * )
      */
     private $height;
 
@@ -49,6 +62,12 @@ class Patient
      */
     private $user;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prescription",mappedBy="patient")
+     *
+     */
+    private $prescription;
 
     /**
      * Get id
@@ -131,5 +150,28 @@ class Patient
     {
         return $this->height;
     }
-}
 
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Patient
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

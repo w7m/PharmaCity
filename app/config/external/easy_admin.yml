@@ -1,0 +1,8 @@
+easy_admin:
+    entities:
+        # change the following to the namespaces of your own entities
+        - AppBundle\Entity\User
+        - AppBundle\Entity\Doctor
+        - AppBundle\Entity\Patient
+        - AppBundle\Entity\Pharmacy
+        - AppBundle\Entity\Supplier
