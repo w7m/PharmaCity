@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * Prescription
@@ -53,19 +54,21 @@ class Prescription
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Patient",inversedBy="prescription")
-     * @Assert\NotBlank(message="Veuillez remplir ce champs")
+     * @MaxDepth(2)
      */
 
     private $patient;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pharmacy",inversedBy="prescription")
+     * @MaxDepth(2)
      */
 
     private $pharmacy;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Doctor",inversedBy="prescription")
+     * @MaxDepth(2)
      */
     private $doctor;
 
@@ -263,10 +266,5 @@ class Prescription
     public function getPrescriptionMedication()
     {
         return $this->prescriptionMedication;
-    }
-
-    public function __toString()
-    {
-        return $this->reference;
     }
 }

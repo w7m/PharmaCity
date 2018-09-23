@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * PrescriptionMedication
@@ -37,11 +39,13 @@ class PrescriptionMedication
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Medication")
+     * @MaxDepth(2)
      */
     private $medication;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prescription",inversedBy="prescriptionMedication")
+     * @MaxDepth(2)
      */
     private $prescription;
 

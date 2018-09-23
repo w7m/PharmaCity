@@ -10,6 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Entity\Prescription;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @Route("/pharmacy", name="")
@@ -104,9 +109,50 @@ class PharmacyController extends Controller
     public function listPrescriptionMedicationPharmacyAction(Prescription $prescription)
     {
         $prescriptionMedication = $prescription->getPrescriptionMedication();
-//         $em = $this->getDoctrine()->getManager();
-//         $prescriptionMedication =  $em->getRepository('AppBundle:PrescriptionMedication')->findOneBy(array('prescription'=>$prescription));
         return $this->render('@App/Prescription/list_prescription_medication_pharmacy.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
+    }
+
+
+    /**
+     * @Route("/setpriceprescriptinmedication/{id}/{price}",
+     *      name="set_price_priscription_medication_pharmacy",
+     *      requirements={"id"="\d+","price"="\d+"},
+     *      options={"expose"="true"})
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function setPricePrescriptionMedicationAction($id,$price, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $prescriptionMedication = $em->getRepository('AppBundle:PrescriptionMedication')->find($id);
+        $prescriptionMedication->setPrice($price);
+        $em->flush();
+        $priceNew = array("price"=>$price);
+        return new JsonResponse($priceNew);
+    }
+
+    /**
+     * @Route("/confirmationprescriptin/{id}/",
+     *      name="confirmation_priscription_medication_pharmacy",
+     *      requirements={"id"="\d+"},
+     *      options={"expose"="true"})
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function confirmationPrescriptionAction(Prescription $prescription, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $prescriptionMedications = $prescription->getPrescriptionMedication();
+        foreach ($prescriptionMedications as $prescriptionMedication){
+            if ($prescriptionMedication->getPrice() == null){
+                $priceEmpty = array("status"=>"Prix vide !");
+                return new JsonResponse($priceEmpty);
+            } else {
+                $prescription->setStatus("Confirmé");
+                $em->flush();
+                $priceNew = array("status"=>"Confirmé");
+                return new JsonResponse($priceNew);
+            }
+        }
+
     }
 
 

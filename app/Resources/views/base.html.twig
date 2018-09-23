@@ -236,11 +236,12 @@
     </div>
 </footer>
 {% block javascripts %}
-<script src="{{ asset('template/js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('template/js/jquery-3.2.1.min.js') }}"></script>
 <script src="{{ asset('template/js/popper.js') }}"></script>
 <script src="{{ asset('template/js/bootstrap.min.js') }}"></script>
-
 <script src="{{ asset('template/js/theme.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 {% endblock %}
 {% block js %}
 {% endblock %}

@@ -2,6 +2,8 @@
 {% block title %}Confirmation ordonance{% endblock %}
 
 {% block body %}
+
+    <h2 class="message-confirm"></h2>
     <table class="table table-bordered table-striped table-condensed">
         <thead>
         <tr>
@@ -14,38 +16,79 @@
         {% for prescriptionMedication in prescriptionMedication %}
             <tr>
                 <td>
-                    {{ prescriptionMedication.medication.name }}</td>
+                    {{ prescriptionMedication.medication.name }}  </td>
                 <td>
                     {{ prescriptionMedication.quantity }}
                 </td>
-                <td style="width: 230px">
-                    <div class="form-group">
-                        <input type="text" class="form-control price" id="email" placeholder="Enter le prix" name="price">
+                <td style="width: 400px">
+                    <div class="current-price">
+                    {% if  prescriptionMedication.price  is defined and  prescriptionMedication.price is not null %}
+                        {{ prescriptionMedication.price }} DT
+                    {% endif %}
                     </div>
-                    {#{{ prescriptionMedication.price }}#}
+                    {% if prescriptionMedication.prescription.status == "Non confirmé" %}
+                        <div class="update-price">
+                            <h4 >modifier</h4>
+                            <div class="form-group">
+                                <input type="text" class="form-control price" id="email" placeholder="Enter le prix" name="price">
+                                <input type="hidden" value="{{ prescriptionMedication.id }}" class="id">
+                                <input type="button" value="Envoyer" class="send-price btn-sm btn btn-info">
+                            </div>
+                        </div>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    {% for prescriptionMedication in prescriptionMedication %}
+        {% if prescriptionMedication.prescription.status == "Non confirmé" %}
+        {% if loop.first %}
+            <input type="hidden" value="{{ prescriptionMedication.prescription.id }}" class="id-prescription">
+            <p class="text-right button-confirmation"><button type="button" style="margin-right:90px" class="btn btn-success btn-lg confirmation-prescription">Confirmé</button></p>
+        {% endif %}
 
-    
-    <p class="text-right"><button type="button" style="margin-right:90px" class="btn btn-success btn-lg send-price">Confirmé</button></p>
+
+       {% endif %}
+    {% endfor %}
 {% endblock %}
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function ()
         {
-
-            $(".send-price").click(function(){
-                alert($('.price').eq(0).val());
-                // for (var i=0;i<$('.price').length;i++) {
-                //
-                // }
+            for (var i=0;i<$('.price').length;i++) {
+                $(".send-price").eq(i).click(function(){
+                    x = $(this);
+                    $.ajax({
+                        type:"GET",
+                        url:Routing.generate('set_price_priscription_medication_pharmacy', {id:$(this).prev().val(),price:$(this).prev().prev().val() }),
+                        async: true,
+                        success:function (data) {
+                            //console.log(x.parent())
+                            x.parent().parent().prev().text(data.price+" DT");
+                        }
+                    })
+                });
+            }
+            $(".confirmation-prescription").click(function(){
+                x = $(this);
+                $.ajax({
+                    type:"GET",
+                    url:Routing.generate('confirmation_priscription_medication_pharmacy', {id:$(this).parent().prev().val() }),
+                    async: true,
+                    success:function (data) {
+                        if (data.status == "Prix vide !"){
+                            x.prepend("<strong style='color: red'>"+status+"</strong>")
+                        }
+                        if (data.status == "Confirmé")
+                        $('.update-price').remove();
+                        $('.button-confirmation').remove();
+                        $('.message-confirm').text(data.status);
+                    }
+                })
             });
+
 
         });
     </script>
 {% endblock %}
-
-

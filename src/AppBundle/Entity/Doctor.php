@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * Doctor
  *
@@ -46,6 +47,7 @@ class Doctor
     /**
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\User",cascade={"persist","remove"})
      * @Assert\Valid
+     * @MaxDepth(2)
      */
     private $user;
 
