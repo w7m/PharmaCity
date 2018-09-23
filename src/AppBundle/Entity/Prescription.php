@@ -25,7 +25,7 @@ class Prescription
     /**
      * @var int
      *
-     * @ORM\Column(name="reference", type="integer", unique=true)
+     * @ORM\Column(name="reference", type="string", unique=true)
      */
     private $reference;
 
@@ -60,18 +60,21 @@ class Prescription
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pharmacy",inversedBy="prescription")
-     * @Assert\NotBlank(message="Veuillez remplir ce champs")
      */
 
     private $pharmacy;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Doctor",inversedBy="prescription")
-     * @Assert\NotBlank(message="Veuillez remplir ce champs")
      */
     private $doctor;
 
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrescriptionMedication",mappedBy="prescription",cascade={"persist"})
+     *
+     */
+    private $prescriptionMedication;
 
     public function getId()
     {
@@ -221,11 +224,49 @@ class Prescription
     {
         return $this->doctor;
     }
-
-
     public function __construct()
     {
-
+      $this->dateAdd = new \DateTime();
+      $this->status = "Non confirmé";
+      $this->reference = md5(((FLOAT)microtime())*950000);
     }
 
+    /**
+     * Add prescriptionMedication
+     *
+     * @param \AppBundle\Entity\PrescriptionMedication $prescriptionMedication
+     *
+     * @return Prescription
+     */
+    public function addPrescriptionMedication(\AppBundle\Entity\PrescriptionMedication $prescriptionMedication)
+    {
+        $this->prescriptionMedication[] = $prescriptionMedication;
+
+        return $this;
+    }
+
+    /**
+     * Remove prescriptionMedication
+     *
+     * @param \AppBundle\Entity\PrescriptionMedication $prescriptionMedication
+     */
+    public function removePrescriptionMedication(\AppBundle\Entity\PrescriptionMedication $prescriptionMedication)
+    {
+        $this->prescriptionMedication->removeElement($prescriptionMedication);
+    }
+
+    /**
+     * Get prescriptionMedication
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPrescriptionMedication()
+    {
+        return $this->prescriptionMedication;
+    }
+
+    public function __toString()
+    {
+        return $this->reference;
+    }
 }

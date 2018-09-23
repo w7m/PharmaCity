@@ -59,32 +59,28 @@
                     </div>
                     {% endif %}
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse offset col-lg-7" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse col-lg-9" id="navbarSupportedContent">
                     <ul class="nav navbar-nav menu_nav ml-auto">
                         <li class="nav-item active"><a class="nav-link" href="{{ path('homepage') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Services</a>
-                        {#<li class="nav-item submenu dropdown">#}
-                            {#<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages</a>#}
-                            {#<ul class="dropdown-menu">#}
-                                {#<li class="nav-item"><a class="nav-link" href="#">Projects</a>#}
-                                {#<li class="nav-item"><a class="nav-link" href="#">Elements</a></li>#}
-                            {#</ul>#}
-                        {#</li>#}
-                        {#<li class="nav-item submenu dropdown">#}
-                            {#<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Blog</a>#}
-                            {#<ul class="dropdown-menu">#}
-                                {#<li class="nav-item"><a class="nav-link" href="#">Blog</a></li>#}
-                                {#<li class="nav-item"><a class="nav-link" href="#">Blog Details</a></li>#}
-                            {#</ul>#}
-                        {#</li>#}
-                        {#<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>#}
+                        {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_patient') }}">Mes Ordonnances</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_DOCTOR') %}
+                            <li class="nav-item"><a class="nav-link" href="{{ path('add_prescription') }}">Ajouté une ordonnances</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_DOCTOR') %}
+                            <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_doctor') }}">Liste des Ordonnances</a></li>
+                        {% endif %}
+                        {#{% if is_granted('ROLE_PHARMACY') %}#}
+                            {#<li class="nav-item"><a class="nav-link" href="{{ path('list_priscription_pharmacy') }}">Liste des Ordonnances "pharmacy"</a></li>#}
+                        {#{% endif %}#}
+
                     </ul>
                 </div>
 
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <div class="visibility-menu-user-in-big-screen">
-                        <div class="collapse navbar-collapse offset col-lg-2">
+                        <div class="collapse navbar-collapse offset col-lg-3">
                             <ul class="nav navbar-nav menu_nav ml-auto">
                                 <li class="nav-item submenu dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -119,6 +115,9 @@
         </nav>
     </div>
 </header>
+
+
+
 <div class="container-fluid content-body">
 {% block body %}
 
@@ -242,6 +241,8 @@
 <script src="{{ asset('template/js/bootstrap.min.js') }}"></script>
 
 <script src="{{ asset('template/js/theme.js') }}"></script>
+{% endblock %}
+{% block js %}
 {% endblock %}
 </body>
 </html>

@@ -1,0 +1,51 @@
+{% extends '@App/layout.html.twig' %}
+{% block title %}Confirmation ordonance{% endblock %}
+
+{% block body %}
+    <table class="table table-bordered table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>Médicament</th>
+            <th>Quantité</th>
+            <th>Prix</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for prescriptionMedication in prescriptionMedication %}
+            <tr>
+                <td>
+                    {{ prescriptionMedication.medication.name }}</td>
+                <td>
+                    {{ prescriptionMedication.quantity }}
+                </td>
+                <td style="width: 230px">
+                    <div class="form-group">
+                        <input type="text" class="form-control price" id="email" placeholder="Enter le prix" name="price">
+                    </div>
+                    {#{{ prescriptionMedication.price }}#}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    
+    <p class="text-right"><button type="button" style="margin-right:90px" class="btn btn-success btn-lg send-price">Confirmé</button></p>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function ()
+        {
+
+            $(".send-price").click(function(){
+                alert($('.price').eq(0).val());
+                // for (var i=0;i<$('.price').length;i++) {
+                //
+                // }
+            });
+
+        });
+    </script>
+{% endblock %}
+
+

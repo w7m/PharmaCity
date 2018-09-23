@@ -1,0 +1,26 @@
+{% extends '@App/layout.html.twig' %}
+{% block title %}Confirmation ordonance{% endblock %}
+
+{% block body %}
+    <table class="table table-bordered table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>Médicament</th>
+            <th>Quantité</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for prescriptionMedication in prescriptionMedication %}
+            <tr>
+                <td>
+                    {{ prescriptionMedication.medication.name }}</td>
+                <td>
+                    {{ prescriptionMedication.quantity }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+

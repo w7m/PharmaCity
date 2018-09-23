@@ -1,0 +1,41 @@
+{% extends '@App/layout.html.twig' %}
+{% block title %}AJOUT ORDONONCE{% endblock %}
+
+{% block body %}
+    <table class="table table-bordered table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>Réference</th>
+            <th>Date d'ajout</th>
+            <th>Status</th>
+            <th>Patient</th>
+            <th>Pharmacie</th>
+            <th>Détaillé</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for prescription in prescription %}
+            <tr>
+                <td>{{ prescription.reference }}</td>
+                <td>
+                    {{ prescription.dateAdd|date('Y-m-d H:i:s') }}
+                </td>
+                <td>
+                    {{ prescription.status }}
+                </td>
+                <td>
+                    {{ prescription.patient.user.name }} {{ prescription.patient.user.firstName }}
+                </td>
+                <td>
+                    {% if  prescription.pharmacy.namePharmacy  is defined and  prescription.pharmacy.namePharmacy is not null %}
+                        {{ prescription.pharmacy.namePharmacy }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('list_priscription_medication_doctor',{ id:prescription.id}) }}">détaille</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -2,9 +2,7 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Doctor;
 use AppBundle\Entity\Patient;
-use AppBundle\Entity\Pharmacy;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,25 +17,12 @@ class PrescriptionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('status',TextType::class,array('label'=>'Le status'))
-                ->add('patient',EntityType::class,array(
+        $builder->add('patient',EntityType::class,array(
                     'class' => Patient::class,
                     'choice_label'=>'user',
                     'multiple'=>false,
-                    'expanded'=>true,
                     'label'=>'choisissez le Patient : '))
-                ->add('pharmacy',EntityType::class,array(
-                    'class' => Pharmacy::class,
-                    'choice_label'=>'namePharmacy',
-                    'multiple'=>false,
-                    'expanded'=>true,
-                    'label'=>'choisissez une pharmacie : '))
-                ->add('doctor',EntityType::class,array(
-                    'class' => Doctor::class,
-                    'choice_label'=>'user',
-                    'multiple'=>false,
-                    'expanded'=>true,
-                    'label'=>'choisissez le docteur : '));
+               ->add('Envoyer',SubmitType::class);
     }/**
      * {@inheritdoc}
      */

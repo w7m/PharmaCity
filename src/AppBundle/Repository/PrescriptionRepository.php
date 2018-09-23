@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class PrescriptionRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getPrescriptionByReferenceQueryBuilder($reference)
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.reference = :reference')
+            ->setParameter('reference', $reference)
+            ;
+    }
 }

@@ -1,0 +1,62 @@
+<?php
+
+namespace AppBundle\Form;
+
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use AppBundle\Repository\PrescriptionRepository;
+
+class PrescriptionMedicationType extends AbstractType
+{
+    /**
+     * {@inheritdoc}
+     */
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $reference = $options['reference'];
+        $builder ->add('prescription',EntityType::class,
+                         array('class'=>'AppBundle\Entity\Prescription',
+                             'choice_label'=>'reference',
+                             'multiple'=>false,
+                             'expanded'=>false,
+                             'label'=>'Référence de l\'ordonance : ',
+                             'query_builder' => function(PrescriptionRepository $pres) use ($reference) {
+                             return $pres->getPrescriptionByReferenceQueryBuilder($reference);
+                             }
+                         ))
+               ->add('medication',EntityType::class,
+                        array('class'=>'AppBundle\Entity\Medication',
+                            'choice_label'=>'name',
+                            'multiple'=>false,
+                            'expanded'=>true,
+                            'label'=>'Choisir un médicament : '
+                        ))
+                ->add('quantity')
+
+
+            ->add('Envoyer',SubmitType::class);
+        ;
+    }/**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'AppBundle\Entity\PrescriptionMedication',
+            $resolver->setRequired('reference')
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'appbundle_prescriptionmedication';
+    }
+
+}

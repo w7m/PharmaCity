@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use AppBundle\Entity\Prescription;
 
 /**
  * @Route("/pharmacy", name="")
@@ -81,6 +82,31 @@ class PharmacyController extends Controller
             return $this->redirectToRoute('edit_add_pharmacy');
         }
 
+    }
+
+    /**
+     * @Route("/listprescription", name="list_priscription_pharmacy")
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function listPrescriptionPharmacyAction()
+    {
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $pharmacy = $em->getRepository('AppBundle:Pharmacy')->findOneBy(array('user'=>$user));
+        $prescriptions = $pharmacy->getPrescription();
+        return $this->render('@App/Prescription/list_prescription_pharmacy.html.twig',array('prescription'=>$prescriptions));
+    }
+
+    /**
+     * @Route("/listprescriptionmedication/{id}", name="list_priscription_medication_pharmacy")
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function listPrescriptionMedicationPharmacyAction(Prescription $prescription)
+    {
+        $prescriptionMedication = $prescription->getPrescriptionMedication();
+//         $em = $this->getDoctrine()->getManager();
+//         $prescriptionMedication =  $em->getRepository('AppBundle:PrescriptionMedication')->findOneBy(array('prescription'=>$prescription));
+        return $this->render('@App/Prescription/list_prescription_medication_pharmacy.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
     }
 
 

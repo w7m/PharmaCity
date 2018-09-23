@@ -67,7 +67,7 @@ class Patient
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Prescription",mappedBy="patient")
      *
      */
-    private $prescription;
+    private $prescriptions;
 
     /**
      * Get id
@@ -191,7 +191,7 @@ class Patient
      */
     public function addPrescription(\AppBundle\Entity\Prescription $prescription)
     {
-        $this->prescription[] = $prescription;
+        $this->prescriptions[] = $prescription;
 
         return $this;
     }
@@ -213,6 +213,6 @@ class Patient
      */
     public function getPrescription()
     {
-        return $this->prescription;
+        return $this->prescriptions;
     }
 }
