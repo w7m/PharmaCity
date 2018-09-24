@@ -23,7 +23,7 @@ class PatientController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return new response("<h1>fzzzzz</h1>");
+        return new response("<h1>opppppppppp/h1>");
 
     }
     /**
@@ -86,6 +86,43 @@ class PatientController extends Controller
 
     }
 
+    /**
+     * @Route("/mylistprescription/{status}", name="patient_prescriptions_by_status")
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function getPrescriptionsActionByState(Request $request, $status) {
+        $userId = $this->getUser()->getId();
+        switch ($status) {
+            case 'pending':
+                $status = 'Non confirmé';
+                break;
+            case 'ongoing':
+                $status = 'Confirmé';
+                break;
+            case 'canceled':
+                $status = 'Annulée';
+                break;
+            case 'delivred':
+                $status = 'Livrée';
+                break;
+            case 'success':
+                $status = 'Confirmé';
+                break;
+        }
+        $patient = $this->getDoctrine()->getRepository(Patient::class)->findOneBy(["user" => $userId]);
+        if ($patient){
+            $prescriptions = $this->getDoctrine()->getRepository(Prescription::class)->findBy([
+                'patient' => $patient,
+                'status' => $status
+            ]);
+            return $this->render('@App/Prescription/list_prescription_patient.html.twig', array(
+                'prescription' => $prescriptions,
+            ));
+        } else {
+            return $this->redirectToRoute('add_info_patient');
+        }
+    }
+
 
     /**
      * @Route("/mylistprescription", name="list_prescription_patient")
@@ -97,8 +134,14 @@ class PatientController extends Controller
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $patient = $em->getRepository('AppBundle:Patient')->findOneBy(array('user'=>$user));
-        $prescription = $patient->getPrescription();
-        return $this->render('@App/Prescription/list_prescription_patient.html.twig',array('prescription'=>$prescription));
+        if ($patient)
+        {
+            $prescription = $patient->getPrescription();
+            return $this->render('@App/Prescription/list_prescription_patient.html.twig',array('prescription'=>$prescription));
+        } else {
+            return $this->redirectToRoute('add_info_patient');
+        }
+
     }
     /**
      * @Route("/choicepharmacy/{id}", name="add_pharmacy_to_prescription")
@@ -106,17 +149,25 @@ class PatientController extends Controller
      */
     public function choicePharmacyPacientAction(Request $request, Prescription $prescription)
     {
-        $form = $this->createForm(PrescriptionPatientType::class, $prescription);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
-            return $this->redirectToRoute('homepage');
+        $patient = $prescription->getPatient();
+        $user = $patient->getUser();
+        $userCurrent = $this->getUser();
+        if ($user === $userCurrent){
+            $form = $this->createForm(PrescriptionPatientType::class, $prescription);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
+                return $this->redirectToRoute('homepage');
+            }
+            return $this->render('@App/Prescription/add_prescription.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        } else {
+            return $this->redirectToRoute('info_patient');
         }
-        return $this->render('@App/Prescription/add_prescription.html.twig', array(
-            'form' => $form->createView(),
-        ));
+
     }
 
     /**
@@ -128,4 +179,5 @@ class PatientController extends Controller
         $prescriptionMedication = $prescription->getPrescriptionMedication();
         return $this->render('@App/Prescription/list_prescription_medication_patient.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
     }
+
 }

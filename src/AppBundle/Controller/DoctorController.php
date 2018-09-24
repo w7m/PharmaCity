@@ -95,23 +95,29 @@ class DoctorController extends Controller
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $doctor = $em->getRepository('AppBundle:Doctor')->findOneBy(array('user'=>$user));
-        $session = $request->getSession();
-        $prescription = new Prescription();
-        $prescription->setDoctor($doctor);
-        $form = $this->createForm(PrescriptionType::class, $prescription);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
+        if ($doctor)
+        {
+            $session = $request->getSession();
+            $prescription = new Prescription();
             $prescription->setDoctor($doctor);
-            $session->set('prescription',$prescription);
-            $em->persist($prescription);
-            $em->flush();
-            $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
-            return $this->redirectToRoute('add_prescription_medication');
+            $form = $this->createForm(PrescriptionType::class, $prescription);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $prescription->setDoctor($doctor);
+                $session->set('prescription',$prescription);
+                $em->persist($prescription);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
+                return $this->redirectToRoute('add_prescription_medication');
+            }
+            return $this->render('@App/Prescription/add_prescription.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        } else {
+            return $this->redirectToRoute('add_info_doctor');
         }
-        return $this->render('@App/Prescription/add_prescription.html.twig', array(
-            'form' => $form->createView(),
-        ));
+
     }
 
     /**
@@ -140,6 +146,45 @@ class DoctorController extends Controller
     }
 
     /**
+     * @Route("/listprescription/{status}", name="doctor_prescriptions_by_status")
+     * @Security("has_role('ROLE_DOCTOR')")
+     */
+    public function getPrescriptionsActionByState(Request $request, $status) {
+        $userId = $this->getUser()->getId();
+        switch ($status) {
+            case 'pending':
+                $status = 'Non confirmé';
+                break;
+            case 'ongoing':
+                $status = 'Confirmé';
+                break;
+            case 'canceled':
+                $status = 'Annulée';
+                break;
+            case 'delivred':
+                $status = 'Livrée';
+                break;
+            case 'success':
+                $status = 'Confirmé';
+                break;
+        }
+        $doctor = $this->getDoctrine()->getRepository(Doctor::class)->findOneBy(["user" => $userId]);
+        if ($doctor){
+            $prescriptions = $this->getDoctrine()->getRepository(Prescription::class)->findBy([
+                'patient' => $doctor,
+                'status' => $status
+            ]);
+            return $this->render('@App/Prescription/list_prescription_doctor.html.twig', array(
+                'prescription' => $prescriptions,
+            ));
+        } else {
+            return $this->redirectToRoute('add_info_doctor');
+        }
+    }
+
+
+
+    /**
      * @Route("/listprescription", name="list_prescription_doctor")
      * @Security("has_role('ROLE_DOCTOR')")
      */
@@ -149,8 +194,14 @@ class DoctorController extends Controller
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $doctor = $em->getRepository('AppBundle:Doctor')->findOneBy(array('user'=>$user));
-        $listPrescription = $doctor->getPrescription();
-        return $this->render('@App/Prescription/list_prescription_doctor.html.twig',array('prescription'=>$listPrescription));
+        if ($doctor)
+        {
+            $listPrescription = $doctor->getPrescription();
+            return $this->render('@App/Prescription/list_prescription_doctor.html.twig',array('prescription'=>$listPrescription));
+        } else {
+            return $this->redirectToRoute('add_info_doctor');
+        }
+
     }
 
     /**

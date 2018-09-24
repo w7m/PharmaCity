@@ -89,6 +89,47 @@ class PharmacyController extends Controller
 
     }
 
+
+    /**
+     * @Route("/listprescription/{status}", name="pharmacy_prescriptions_by_status")
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function getPrescriptionsActionByState(Request $request, $status) {
+        $userId = $this->getUser()->getId();
+        switch ($status) {
+            case 'pending':
+                $status = 'Non confirmé';
+                break;
+            case 'ongoing':
+                $status = 'Confirmé';
+                break;
+            case 'canceled':
+                $status = 'Annulée';
+                break;
+            case 'delivred':
+                $status = 'Livrée';
+                break;
+            case 'success':
+                $status = 'Confirmé';
+                break;
+        }
+
+            $pharmacy = $this->getDoctrine()->getRepository(Pharmacy::class)->findOneBy(["user" => $userId]);
+        if ($pharmacy) {
+            $prescriptions = $this->getDoctrine()->getRepository(Prescription::class)->findBy([
+                'patient' => $pharmacy,
+                'status' => $status
+            ]);
+            return $this->render('@App/Prescription/list_prescription_doctor.html.twig', array(
+                'prescription' => $prescriptions,
+            ));
+        } else {
+            return $this->redirectToRoute('add_info_pharmacy');
+        }
+    }
+
+
+
     /**
      * @Route("/listprescription", name="list_priscription_pharmacy")
      * @Security("has_role('ROLE_PHARMACY')")
@@ -98,9 +139,15 @@ class PharmacyController extends Controller
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $pharmacy = $em->getRepository('AppBundle:Pharmacy')->findOneBy(array('user'=>$user));
+        if ($pharmacy){
         $prescriptions = $pharmacy->getPrescription();
         return $this->render('@App/Prescription/list_prescription_pharmacy.html.twig',array('prescription'=>$prescriptions));
+
+        } else {
+            return $this->redirectToRoute('add_info_pharmacy');
+        }
     }
+
 
     /**
      * @Route("/listprescriptionmedication/{id}", name="list_priscription_medication_pharmacy")

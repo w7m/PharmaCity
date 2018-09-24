@@ -59,21 +59,28 @@
                     </div>
                     {% endif %}
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse col-lg-9" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse col-lg-7" id="navbarSupportedContent">
                     <ul class="nav navbar-nav menu_nav ml-auto">
                         <li class="nav-item active"><a class="nav-link" href="{{ path('homepage') }}">Home</a></li>
                         {% if is_granted('ROLE_USER') %}
                         <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_patient') }}">Mes Ordonnances</a></li>
                         {% endif %}
                         {% if is_granted('ROLE_DOCTOR') %}
-                            <li class="nav-item"><a class="nav-link" href="{{ path('add_prescription') }}">Ajouté une ordonnances</a></li>
+
+
+
+
+                            <li class="nav-item submenu dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestion des ordonnances</a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" href="{{ path('add_prescription') }}">Ajouté une ordonnances</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_doctor') }}">Liste des Ordonnances</a></li>
+                                </ul>
+                            </li>
                         {% endif %}
-                        {% if is_granted('ROLE_DOCTOR') %}
-                            <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_doctor') }}">Liste des Ordonnances</a></li>
+                        {% if is_granted('ROLE_PHARMACY') %}
+                            <li class="nav-item"><a class="nav-link" href="{{ path('list_priscription_pharmacy') }}">Liste des Ordonnances</a></li>
                         {% endif %}
-                        {#{% if is_granted('ROLE_PHARMACY') %}#}
-                            {#<li class="nav-item"><a class="nav-link" href="{{ path('list_priscription_pharmacy') }}">Liste des Ordonnances "pharmacy"</a></li>#}
-                        {#{% endif %}#}
 
                     </ul>
                 </div>
@@ -106,7 +113,7 @@
                         </div>
                     </div>
                     {% else %}
-                    <div class="visibility-menu-user-in-big-screen">
+                    <div class="visibility-menu-user-in-big-screen col-lg-3">
                             <a href="{{ path('fos_user_security_login') }}" class="connection-inscription">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
                             <a href="{{ path('fos_user_registration_register') }}" class="connection-inscription">Insciption</a>
                     {% endif %}

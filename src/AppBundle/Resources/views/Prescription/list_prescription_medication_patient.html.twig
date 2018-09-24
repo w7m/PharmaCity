@@ -1,31 +1,56 @@
-{% extends '@App/layout.html.twig' %}
-{% block title %}Confirmation ordonance{% endblock %}
+{#{% extends '@App/layout.html.twig' %}#}
+{#{% block title %}Confirmation ordonance{% endblock %}#}
 
-{% block body %}
-    <table class="table table-bordered table-striped table-condensed">
+{#{% block body %}#}
+    {#<table class="table table-bordered table-striped table-condensed">#}
+        {#<thead>#}
+        {#<tr>#}
+            {#<th>Médicament</th>#}
+            {#<th>Quantité</th>#}
+        {#</tr>#}
+        {#</thead>#}
+        {#<tbody>#}
+        {#{% for prescriptionMedication in prescriptionMedication %}#}
+            {#<tr>#}
+                {#<td>#}
+                    {#{{ prescriptionMedication.medication.name }}</td>#}
+                {#<td>#}
+                    {#{{ prescriptionMedication.quantity }}#}
+                {#</td>#}
+            {#</tr>#}
+        {#{% endfor %}#}
+        {#</tbody>#}
+    {#</table>#}
+    {#{% for prescriptionMedication in prescriptionMedication %}#}
+        {#{% if loop.first %}#}
+            {#{% if prescriptionMedication.prescription.status == "Non confirmé" %}#}
+        {#<h3><a style="margin-left: 50px;" href="{{ path('add_pharmacy_to_prescription',{ id:prescriptionMedication.prescription.id }) }}">Choisir une pharmacie</a></h3>#}
+        {#{% else %}#}
+            {#<h3>Confirmé</h3>#}
+        {#{% endif %}#}
+        {#{% endif %}#}
+
+    {#{% endfor %}#}
+{#{% endblock %}#}
+
+<div class="container">
+    <table class="table ">
         <thead>
         <tr>
-            <th>Médicament</th>
-            <th>Quantité</th>
+        <th>Médicament</th>
+        <th>Quantité</th>
         </tr>
         </thead>
-        <tbody>
         {% for prescriptionMedication in prescriptionMedication %}
+            <tbody>
             <tr>
-                <td>
-                    {{ prescriptionMedication.medication.name }}</td>
-                <td>
-                    {{ prescriptionMedication.quantity }}
-                </td>
+            <td>
+            {{ prescriptionMedication.medication.name }}</td>
+            <td>
+            {{ prescriptionMedication.quantity }}
+            </td>
             </tr>
+            </tbody>
         {% endfor %}
-        </tbody>
     </table>
-    {% for prescriptionMedication in prescriptionMedication %}
-        {% if loop.first %}
-        <h3><a style="margin-left: 50px;" href="{{ path('add_pharmacy_to_prescription',{ id:prescriptionMedication.prescription.id }) }}">Choisir une pharmacie</a></h3>
-        {% endif %}
-    {% endfor %}
-{% endblock %}
-
-
+</div>

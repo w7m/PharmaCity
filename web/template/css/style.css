@@ -458,7 +458,6 @@ blockquote q span {
 /*}*/
 /*q:after {*/
   /*content: close-quote;*/
-}
 /*q:before, q:after {*/
   /*color: #ccc;*/
   /*font-size: 1rem;*/
@@ -1659,7 +1658,6 @@ blockquote q span {
 
 .reservation_form_area .res_form_inner:before {
   content: "";
-  background: url(../img/contact-shap-1.png);
   position: absolute;
   left: -125px;
   height: 421px;
@@ -1672,7 +1670,6 @@ blockquote q span {
 
 .reservation_form_area .res_form_inner:after {
   content: "";
-  background: url(../img/contact-shap-2.png);
   position: absolute;
   right: -125px;
   height: 421px;
@@ -1784,7 +1781,6 @@ blockquote q span {
 .contact_info .info_item h6 {
   font-size: 16px;
   line-height: 24px;
-  color: "Roboto", sans-serif;
   font-weight: bold;
   margin-bottom: 0px;
   color: #222222;
@@ -2362,7 +2358,6 @@ h6 {
 }
 
 .genric-btn.arrow {
-  display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
   -webkit-box-align: center;
@@ -2543,7 +2538,7 @@ h6 {
 }
 
 .genric-btn.disable {
-  color: #222222, 0.3;
+  color: #222222;
   background: #f9f9ff;
   border: 1px solid transparent;
   cursor: not-allowed;
@@ -3705,7 +3700,6 @@ h6 {
 
 .services_item p {
   font-size: 14px;
-  font-family: #777777;
   line-height: 24px;
 }
 
