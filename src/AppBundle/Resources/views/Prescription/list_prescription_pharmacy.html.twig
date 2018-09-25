@@ -45,10 +45,86 @@
 
 
 
+
+
+{#{% extends '@App/layout.html.twig' %}#}
+
+{#{% block body %}#}
+     {#{% if prescription  is empty  %}#}
+        {#<h4>Aucune ordonnance n'a été trouvée</h4>#}
+    {#{% else %}#}
+
+    {#<div class="container list-container">#}
+
+        {#<h2>Liste des ordonances</h2>#}
+        {#<nav class="navbar filter">#}
+            {#<form class="form-inline">#}
+                {#<input class="form-control mr-sm-2" type="search" placeholder="Chercher une ordonnance" aria-label="Search">#}
+            {#</form>#}
+            {#<div class="dropdown">#}
+                {#<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+                    {#Status#}
+                {#</button>#}
+                {#<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">#}
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'canceled'}) }}">Annulée</a>#}
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'ongoing'}) }}">En cours de traitement</a>#}
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'delivred'}) }}">Livrée</a>#}
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'pending'}) }}">Non Confirmé</a>#}
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'success'}) }}">Confirmé</a>#}
+                {#</div>#}
+            {#</div>#}
+        {#</nav>#}
+
+
+        {#<table class="table table-striped">#}
+            {#<thead>#}
+            {#<tr>#}
+                {#<th scope="col">Reference</th>#}
+                {#<th scope="col">Patient</th>#}
+                {#<th scope="col">Pharmacie</th>#}
+                {#<th scope="col">Docteur</th>#}
+                {#<th scope="col">Date d'ajout</th>#}
+                {#<th scope="col">Status</th>#}
+                {#<th scope="col">Action</th>#}
+            {#</tr>#}
+            {#</thead>#}
+                {#{% for prescription in prescription %}#}
+                    {#<tbody>#}
+                    {#<tr>#}
+                        {#<th scope="row">{{ prescription.reference }}</th>#}
+                        {#<th>{{ prescription.patient.user.firstName }} {{ prescription.patient.user.name }}</th>#}
+                        {#{% if  prescription.pharmacy  is defined and  prescription.pharmacy is not null %}#}
+                            {#<th>{{ prescription.pharmacy.namePharmacy }}</th>#}
+                        {#{% else %}#}
+                            {#<th>choisir une pharmacie</th>#}
+                        {#{% endif %}#}
+                        {#<th>{{ prescription.doctor.user }} {{ prescription.doctor.user.name }}</th>#}
+                        {#<th>{{ prescription.dateAdd|date("d/m/Y")  }}</th>#}
+                        {#<th>#}
+                            {#{% if prescription.status == "Non confirmé" %}#}
+                                {#<span class="badge badge-warning">{{ prescription.status }}</span>#}
+                            {#{% elseif prescription.status == "Annulée" %}#}
+                                {#<span class="badge badge-danger">{{ prescription.status }}</span>#}
+                            {#{% elseif prescription.status == "Livrée" %}#}
+                                {#<span class="badge badge-primary">{{ prescription.status }}</span>#}
+                            {#{% elseif prescription.status == "Confirmé" %}#}
+                                {#<span class="badge badge-success">{{ prescription.status }}</span>#}
+                            {#{% endif %}#}
+                        {#</th>#}
+                        {#<th><a href="{{ path('list_priscription_medication_pharmacy',{ id:prescription.id}) }}" class="show-prescription">Visualiser l'ordonnance</a></th>#}
+                    {#</tr>#}
+                    {#</tbody>#}
+                {#{% endfor %}#}
+            {#{% endif %}#}
+        {#</table>#}
+    {#</div>#}
+{#{% endblock %}#}
+
+
+
+
 {% extends '@App/layout.html.twig' %}
-
 {% block body %}
-
     {% block modal %}
         <!-- Modal -->
         <div class="modal fade" id="prescription" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -61,27 +137,16 @@
                         </button>
                     </div>
                     <div class="modal-body">
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
     {% endblock %}
-
-
-
-
-
     <div class="container list-container">
-
         <h2>Liste des ordonances</h2>
-
         <nav class="navbar filter">
             <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="Chercher une ordonnance" aria-label="Search">
+                <input class="form-control mr-sm-2 search-bar" type="search" placeholder="Chercher une ordonnance" aria-label="Search">
             </form>
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -96,8 +161,6 @@
                 </div>
             </div>
         </nav>
-
-
         <table class="table table-striped">
             <thead>
             <tr>
@@ -111,8 +174,8 @@
             </tr>
             </thead>
             {% if prescription %}
+                <tbody>
                 {% for prescription in prescription %}
-                    <tbody>
                     <tr>
                         <th scope="row">{{ prescription.reference }}</th>
                         <th>{{ prescription.patient.user.firstName }} {{ prescription.patient.user.name }}</th>
@@ -134,14 +197,37 @@
                                 <span class="badge badge-success">{{ prescription.status }}</span>
                             {% endif %}
                         </th>
-                        <th><a href="{{ path('my_list_prescription_medicacation',{ id:prescription.id}) }}" class=" show-prescription" data-toggle="modal" data-target="#prescription">Visualiser l'ordonnance</a></th>
+                        <th><a href="{{ path('list_priscription_medication_pharmacy',{ id:prescription.id}) }}">Visualiser l'ordonnance</a></th>
                     </tr>
-                    </tbody>
                 {% endfor %}
+                </tbody>
             {% else %}
                 <h4>Aucune ordonnance n'a été trouvée</h4>
             {% endif %}
         </table>
     </div>
-
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.search-bar').keyup(function () {
+                let term = $(this).val();
+                if(term != "") {
+                    $.ajax({
+                        url: '{{ path('pharmacy_search_query') }}',
+                        method: "GET",
+                        data: {term:term},
+                        cache: false,
+                    }).done( function(response) {
+                        //console.log(response);
+                        $(".table-striped tbody").replaceWith(response);
+                    }).fail(function(jxh,textmsg,errorThrown){
+                        console.log(textmsg);
+                        console.log(errorThrown);
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

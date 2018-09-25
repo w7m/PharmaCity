@@ -10,4 +10,19 @@ namespace AppBundle\Repository;
  */
 class MedicationRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function getMedicationByname($medic)
+    {
+        $qb = $this
+            ->createQueryBuilder('m')
+            ->where('m.name LIKE :medic')
+            ->orWhere('m.name LIKE :medic')
+            ->setParameters(
+                array(
+                    'medic'=>"%".$medic."%",
+                ));
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

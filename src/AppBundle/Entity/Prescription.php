@@ -74,7 +74,7 @@ class Prescription
 
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrescriptionMedication",mappedBy="prescription",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrescriptionMedication",mappedBy="prescription",cascade={"persist","remove"})
      *
      */
     private $prescriptionMedication;

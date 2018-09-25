@@ -180,4 +180,25 @@ class PatientController extends Controller
         return $this->render('@App/Prescription/list_prescription_medication_patient.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
     }
 
+    /**
+     * @return mixed
+     * @Route("/searchprescritions", name="patient_search_query")
+     * @Security("has_role('ROLE_USER')")
+     */
+    public function searchAction(Request $request) {
+
+        $term = $request->query->get('term');
+        $userId = $this->getUser()->getId();
+
+
+        $repository = $this->getDoctrine()->getRepository(Prescription::class);
+        $patient = $this->getDoctrine()->getRepository(Patient::class)->findOneBy(["user" => $userId]);
+        $patientId = $patient->getId();
+        $prescriptions = $repository->searchPrescriptions($term, 'patient', $patientId);
+
+        return $this->render('@App/Prescription/search.html.twig',array(
+            'prescriptions'=>$prescriptions
+        ));
+    }
+
 }

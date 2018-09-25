@@ -1,0 +1,31 @@
+<tbody>
+{% if prescriptions %}
+    {% for prescription in prescriptions %}
+        <tr>
+            <th scope="row">{{ prescription.reference }}</th>
+            <th>{{ prescription.patient.user.firstName }} {{ prescription.patient.user.name }}</th>
+            {% if  prescription.pharmacy  is defined and  prescription.pharmacy is not null %}
+                <th>{{ prescription.pharmacy.namePharmacy }}</th>
+            {% else %}
+                <th>choisir une pharmacie</th>
+            {% endif %}
+            <th>{{ prescription.doctor.user }} {{ prescription.doctor.user.name }}</th>
+            <th>{{ prescription.dateAdd|date("d/m/Y")  }}</th>
+            <th>
+                {% if prescription.status == "Non confirmé" %}
+                    <span class="badge badge-warning">{{ prescription.status }}</span>
+                {% elseif prescription.status == "Annulée" %}
+                    <span class="badge badge-danger">{{ prescription.status }}</span>
+                {% elseif prescription.status == "Livrée" %}
+                    <span class="badge badge-primary">{{ prescription.status }}</span>
+                {% elseif prescription.status == "Confirmé" %}
+                    <span class="badge badge-success">{{ prescription.status }}</span>
+                {% endif %}
+            </th>
+            <th><a href="{{ path('list_priscription_medication_doctor',{ id:prescription.id}) }}" class="show-prescription" data-target="#prescription">Visualiser l'ordonnance</a></th>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr><th colspan="8">Aucune ordonnance n'a été trouvée</th></tr>
+{% endif %}
+</tbody>

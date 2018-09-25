@@ -63,7 +63,7 @@
                     <ul class="nav navbar-nav menu_nav ml-auto">
                         <li class="nav-item active"><a class="nav-link" href="{{ path('homepage') }}">Home</a></li>
                         {% if is_granted('ROLE_USER') %}
-                        <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_patient') }}">Mes Ordonnances</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_patient') }}">Mes Consultations</a></li>
                         {% endif %}
                         {% if is_granted('ROLE_DOCTOR') %}
 

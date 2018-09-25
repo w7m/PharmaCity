@@ -2,5 +2,100 @@
 {% block title %}AJOUT ORDONONCE{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <p class="text-right"><a href="{{ path('list_prescription_doctor') }}" class="btn btn-success">Terminer</a></p>
+    {% if prescriptionMedicationAdded %}
+
+    <h2>Médicament ajouté</h2>
+
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>Médicament</th>
+                <th>Quantité</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prescriptionMedicationAdded  in prescriptionMedicationAdded  %}
+                <tr>
+                    <td>
+                        {{ prescriptionMedicationAdded .medication.name }}</td>
+                    <td>
+                        {{ prescriptionMedicationAdded .quantity }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    <h2>Ajouté des médicament</h2>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.prescription) }}
+    {{ form_row(form.prescription) }}
+
+    <div class="form-group">
+        <label for="exampleInputEmail1">Filtrer les médicaments </label>
+        <input type="text" class="form-control" id="name-medication" placeholder="chercher le médicament...">
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+
+{% block js %}
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            $("#name-medication").keyup(function(){
+                if ($("#name-medication").val() != ""){
+                    $.ajax({
+                        type:"GET",
+                        url:Routing.generate('find_medication', {medic:$("#name-medication").val() }),
+                        success:function (data) {
+                            $('#appbundle_prescriptionmedication_medication')
+                                .find('option')
+                                .remove();
+                            console.log(data.jsonMedication);
+
+                            var x = JSON.parse(data['jsonMedication']);
+
+                            for (i=0 ; x.length; i++)
+                            {
+                                $('#appbundle_prescriptionmedication_medication')
+                                    .append('<option value='+x[i].id+'>'+x[i].name+'</option>')
+                            }
+
+
+
+
+                        }
+                    })
+            } else {
+                    $.ajax({
+                        type:"GET",
+                        url:Routing.generate('find_medication', {medic:"all" }),
+                        success:function (data) {
+                            $('#appbundle_prescriptionmedication_medication')
+                                .find('option')
+                                .remove();
+                            console.log(data.jsonMedication);
+
+                            var x = JSON.parse(data['jsonMedication']);
+
+                            for (i=0 ; x.length; i++)
+                            {
+                                $('#appbundle_prescriptionmedication_medication')
+                                    .append('<option value='+x[i].id+'>'+x[i].name+'</option>')
+                            }
+
+
+
+
+                        }
+                    })
+                }
+            });
+        });
+    </script>
 {% endblock %}

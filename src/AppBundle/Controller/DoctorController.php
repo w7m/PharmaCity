@@ -12,6 +12,11 @@ use AppBundle\Form\PrescriptionMedicationType;
 use AppBundle\Form\PrescriptionType;
 use AppBundle\Entity\PrescriptionMedication;
 use AppBundle\Entity\Prescription;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @Route("/doctor", name="")
@@ -126,14 +131,17 @@ class DoctorController extends Controller
      */
     public function addPrescriptionMedicationDoctorAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $session = $request->getSession();
         $prescription = $session->get('prescription');
+
         $reference = $prescription->getReference();
+        $prescriptionMedicationAdded = $em->getRepository('AppBundle:PrescriptionMedication')->findBy(array('prescription'=>$prescription));
         $prescriptionMedication = new PrescriptionMedication();
         $form = $this->createForm(PrescriptionMedicationType::class,$prescriptionMedication ,['reference'=>$reference]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+
             $em->persist($prescriptionMedication);
             $em->flush();
             $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
@@ -141,9 +149,11 @@ class DoctorController extends Controller
         }
         return $this->render('@App/Prescription/add_prescription_medication.html.twig', array(
             'form' => $form->createView(),
+            'prescriptionMedicationAdded'=>$prescriptionMedicationAdded
         ));
 
     }
+
 
     /**
      * @Route("/listprescription/{status}", name="doctor_prescriptions_by_status")
@@ -190,7 +200,7 @@ class DoctorController extends Controller
      */
     public function  listPrescriptionForDocotrAction(Request $request)
     {
-//        $session = $request->getSession();
+//      $session = $request->getSession();
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
         $doctor = $em->getRepository('AppBundle:Doctor')->findOneBy(array('user'=>$user));
@@ -213,6 +223,91 @@ class DoctorController extends Controller
         $prescriptionMedication = $prescription->getPrescriptionMedication();
         return $this->render('@App/Prescription/list_prescription_medication_doctor.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
 
+    }
+
+    /**
+     * @Route("/finmedication/{medic}", name="find_medication",
+     *     options={"expose"="true"})
+     * @Security("has_role('ROLE_DOCTOR')")
+     */
+    public function findMedicationDoctor(Request $request, $medic)
+    {
+        if ($medic=="all"){
+            $em = $this->getDoctrine()->getManager();
+            $medications1 = $em->getRepository('AppBundle:Medication')->findAll();
+            $encoders = array(new XmlEncoder(), new JsonEncoder());
+            $normalizers = array(new ObjectNormalizer());
+            $serializer = new Serializer($normalizers, $encoders);
+            $json = $serializer->serialize($medications1, 'json');
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $repository = $em->getRepository('AppBundle:Medication');
+            $medications = $repository->getMedicationByname($medic);
+            if($medications) {
+                $encoders = array(new XmlEncoder(), new JsonEncoder());
+                $normalizers = array(new ObjectNormalizer());
+                $serializer = new Serializer($normalizers, $encoders);
+                $json = $serializer->serialize($medications, 'json');
+            } else {
+                $em = $this->getDoctrine()->getManager();
+                $medications1 = $em->getRepository('AppBundle:Medication')->findAll();
+                $encoders = array(new XmlEncoder(), new JsonEncoder());
+                $normalizers = array(new ObjectNormalizer());
+                $serializer = new Serializer($normalizers, $encoders);
+                $json = $serializer->serialize($medications1, 'json');
+            }
+        }
+        $response = new JsonResponse();
+        $response->setData(array('jsonMedication'=>$json));
+       return $response;
+    }
+
+    /**
+     * @Route("/deleteprescription/{id}", name="delete_prescription")
+     * @Security("has_role('ROLE_DOCTOR')")
+     */
+    public function deletePrescriptionAction(Prescription $prescription)
+    {
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $doctor = $em->getRepository('AppBundle:Doctor')->findOneBy(array('user'=>$user));
+        if ($doctor)
+        {
+            $doctorPrescription =$prescription->getDoctor();
+            if ($doctorPrescription === $doctor){
+                $em->remove($prescription);
+                $em->flush();
+                return $this->redirectToRoute('list_prescription_doctor');
+            } else {
+                return $this->redirectToRoute('list_prescription_doctor');
+            }
+
+
+        } else {
+            return $this->redirectToRoute('list_prescription_doctor');
+        }
+    }
+
+
+    /**
+     * @return mixed
+     * @Route("/searchprescritions", name="doctor_search_query")
+     * @Security("has_role('ROLE_DOCTOR')")
+     */
+    public function searchAction(Request $request) {
+
+        $term = $request->query->get('term');
+        $userId = $this->getUser()->getId();
+
+
+        $repository = $this->getDoctrine()->getRepository(Prescription::class);
+        $doctor = $this->getDoctrine()->getRepository(Doctor::class)->findOneBy(["user" => $userId]);
+        $doctorId = $doctor->getId();
+        $prescriptions = $repository->searchPrescriptions($term, 'doctor', $doctorId);
+
+        return $this->render('@App/Prescription/search.html.twig',array(
+            'prescriptions'=>$prescriptions
+        ));
     }
 
 

@@ -201,6 +201,26 @@ class PharmacyController extends Controller
         }
 
     }
+    /**
+     * @return mixed
+     * @Route("/searchprescritions", name="pharmacy_search_query")
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function searchAction(Request $request) {
+
+        $term = $request->query->get('term');
+        $userId = $this->getUser()->getId();
+
+
+        $repository = $this->getDoctrine()->getRepository(Prescription::class);
+        $pharmacy = $this->getDoctrine()->getRepository(Pharmacy::class)->findOneBy(["user" => $userId]);
+        $pharmacyId = $pharmacy->getId();
+        $prescriptions = $repository->searchPrescriptions($term, 'pharmacy', $pharmacyId);
+
+        return $this->render('@App/Prescription/search.html.twig',array(
+            'prescriptions'=>$prescriptions
+        ));
+    }
 
 
 }

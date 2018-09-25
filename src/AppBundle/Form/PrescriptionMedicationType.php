@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,10 +33,11 @@ class PrescriptionMedicationType extends AbstractType
                         array('class'=>'AppBundle\Entity\Medication',
                             'choice_label'=>'name',
                             'multiple'=>false,
-                            'expanded'=>true,
-                            'label'=>'Choisir un médicament : '
-                        ))
-                ->add('quantity')
+                            'expanded'=>false,
+                            'label'=>' '
+                            )
+                        )
+                ->add('quantity',TextType::class,array('label'=>'Quantité'))
 
 
             ->add('Envoyer',SubmitType::class);

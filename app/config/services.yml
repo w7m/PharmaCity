@@ -51,6 +51,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: eventuserredirect }
 
+    form.type.datalist_type:
+        class: AppBundle\Form\DatalistType
+        tags:
+            -  { name: form.type, alias: datalist }
 #    app_user.registration_listener:
 #        class: AppBundle\Eventsuser\RegistrationListener
 #        arguments:
