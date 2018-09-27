@@ -99,6 +99,11 @@ class User extends BaseUser
      */
     private $cin;
 
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Media",mappedBy="user")
+     */
+    private $media;
+
     public function __construct()
     {
         parent::__construct();
@@ -248,4 +253,28 @@ class User extends BaseUser
         return $this->cin;
     }
 
+
+    /**
+     * Set media
+     *
+     * @param \AppBundle\Entity\Media $media
+     *
+     * @return User
+     */
+    public function setMedia(\AppBundle\Entity\Media $media = null)
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
+    /**
+     * Get media
+     *
+     * @return \AppBundle\Entity\Media
+     */
+    public function getMedia()
+    {
+        return $this->media;
+    }
 }

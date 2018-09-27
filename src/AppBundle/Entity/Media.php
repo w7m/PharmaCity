@@ -37,13 +37,18 @@ class Media
      * @Assert\File(
      *     maxSize = "1024k",
      *     maxSizeMessage="s'il vous plaît upload un image de taille max : 1M.",
-     *     mimeTypes = {"image/jpeg","image/png"},
      *     mimeTypesMessage = "l'extension de l'image doit de type jpg."
      * )
      */
     private $file;
 
     private $fileName;
+
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User",inversedBy="media")
+     */
+    private $user;
 
     public function getId()
     {
@@ -109,6 +114,9 @@ class Media
     {
         $this->file = $file;
     }
+
+
+
     /**
      * @ORM\PrePersist()
      */
@@ -126,21 +134,6 @@ class Media
     }
 
 
-    public function UpdateObject()
-    {
-        if (file_exists($this->file)){
-            $this->fileName = md5(uniqid()).".".$this->file->guessExtension();
-
-            $this->setPath("upload/picture_user/".$this->fileName);
-            $this->setAlt("user");
-        } else {
-
-            return;
-        }
-    }
-
-
-
     /**
      * @ORM\PostPersist()
      */
@@ -153,33 +146,28 @@ class Media
         }
     }
 
-    public function uploadUpdateFile()
-    {
-
-        if (file_exists($this->file)){
-            $this->file->move($GLOBALS['kernel']->getContainer()->getParameter('user_media'),$this->fileName);
-        } else {
-            return;
-        }
-    }
-
-
-
-
-
 
     /**
-     * @ORM\PreRemove()
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Media
      */
-    public function getFileName()
+    public function setUser(\AppBundle\Entity\User $user = null)
     {
-        $this->fileName = $this->path;
+        $this->user = $user;
+
+        return $this;
     }
+
     /**
-     * @ORM\PostRemove()
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
      */
-    public function removeFile()
+    public function getUser()
     {
-        unlink(__DIR__."/../../../.."."/web/".$this->fileName);
+        return $this->user;
     }
 }

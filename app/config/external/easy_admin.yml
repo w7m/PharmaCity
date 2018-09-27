@@ -6,3 +6,4 @@ easy_admin:
         - AppBundle\Entity\Patient
         - AppBundle\Entity\Pharmacy
         - AppBundle\Entity\Supplier
+        - AppBundle\Entity\Medication

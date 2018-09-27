@@ -267,4 +267,8 @@ class Prescription
     {
         return $this->prescriptionMedication;
     }
+
+    public function __toString() {
+        return $this->reference;
+}
 }

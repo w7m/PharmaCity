@@ -11,10 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Entity\Prescription;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 /**
  * @Route("/pharmacy", name="")
@@ -193,7 +189,7 @@ class PharmacyController extends Controller
                 $priceEmpty = array("status"=>"Prix vide !");
                 return new JsonResponse($priceEmpty);
             } else {
-                $prescription->setStatus("Confirmé");
+                $prescription->setStatus("Confirmée");
                 $em->flush();
                 $priceNew = array("status"=>"Confirmé");
                 return new JsonResponse($priceNew);
@@ -220,6 +216,35 @@ class PharmacyController extends Controller
         return $this->render('@App/Prescription/search.html.twig',array(
             'prescriptions'=>$prescriptions
         ));
+    }
+
+    /**
+     * @return mixed
+     * @Route("/cancelprescription/{id}", name="cancel_prescription")
+     * @Security("has_role('ROLE_PHARMACY')")
+     */
+    public function cancelDemandeAction(Request $request, Prescription $prescription)
+    {
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $pharmacy = $em->getRepository('AppBundle:Pharmacy')->findOneBy(array('user'=>$user));
+        if ($pharmacy)
+        {
+            $pharmacyPrescription =$prescription->getPharmacy();
+            if ($pharmacyPrescription === $pharmacy){
+                $prescription->setStatus("Annulée");
+              $prescriptionMedication = $prescription->getPrescriptionMedication();
+                foreach ($prescriptionMedication as $prescriptionmed){
+                    $prescriptionmed->setPrice(0);
+                }
+                $em->flush();
+                return $this->redirectToRoute('list_priscription_pharmacy');
+            } else {
+                return $this->redirectToRoute('list_priscription_pharmacy');
+            }
+        } else {
+            return $this->redirectToRoute('list_priscription_pharmacy');
+        }
     }
 
 

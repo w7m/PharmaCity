@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Media;
 use AppBundle\Entity\Patient;
 use AppBundle\Form\PatientType;
+use AppBundle\Form\MediaType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,14 +25,13 @@ class PatientController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return new response("<h1>opppppppppp/h1>");
+        return new response("<h1>opppppppppp</h1>");
 
     }
     /**
      * @Route("/addinfo", name="add_info_patient")
      * @Security("has_role('ROLE_USER')")
      */
-
     public function addInfoAction(Request $request)
     {
         $user = $this->getUser();
@@ -87,6 +88,56 @@ class PatientController extends Controller
     }
 
     /**
+     * @Route("/editmedia", name="edit_media_patient")
+     * @Security("has_role('ROLE_USER')")
+     */
+
+    public function editMediaAction(Request $request)
+    {
+        $user = $this->getUser();
+        $media = $user->getMedia();
+        if ($media){
+            $form = $this->createForm(MediaType::class, $media);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+//                 $form->getData();
+                $oldPath = $media->getPath();
+                $file = $form["file"]->getData();
+                $fileName = md5(uniqid()).".".$file->guessExtension();
+                $media->setPath("upload/picture_user/".$fileName);
+                $media->setAlt("user");
+//                dump($media);
+//                die();
+                $em = $this->getDoctrine()->getManager();
+                $em->flush();
+                unlink(__DIR__."/../../../"."web/".$oldPath);
+                $file->move($this->getParameter('user_media'),$fileName);
+                $request->getSession()->getFlashBag()->add('notice', 'Image a bien été modifiée.');
+                return $this->redirectToRoute('homepage');
+            }
+            return $this->render('@App/Patient/add_media_patient.html.twig', array(
+                'form' => $form->createView(),
+            ));
+
+        } else {
+            $media = new Media();
+            $form = $this->createForm(MediaType::class, $media);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $media->setUser($user);
+                $em->persist($media);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Image a bien été ajoutée.');
+                return $this->redirectToRoute('homepage');
+            }
+            return $this->render('@App/Patient/add_media_patient.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
+    }
+
+    /**
      * @Route("/mylistprescription/{status}", name="patient_prescriptions_by_status")
      * @Security("has_role('ROLE_USER')")
      */
@@ -94,19 +145,16 @@ class PatientController extends Controller
         $userId = $this->getUser()->getId();
         switch ($status) {
             case 'pending':
-                $status = 'Non confirmé';
+                $status = 'Non confirmée';
                 break;
             case 'ongoing':
-                $status = 'Confirmé';
+                $status = 'Confirmée';
                 break;
             case 'canceled':
                 $status = 'Annulée';
                 break;
             case 'delivred':
-                $status = 'Livrée';
-                break;
-            case 'success':
-                $status = 'Confirmé';
+                $status = 'En attente';
                 break;
         }
         $patient = $this->getDoctrine()->getRepository(Patient::class)->findOneBy(["user" => $userId]);
@@ -136,7 +184,7 @@ class PatientController extends Controller
         $patient = $em->getRepository('AppBundle:Patient')->findOneBy(array('user'=>$user));
         if ($patient)
         {
-            $prescription = $patient->getPrescription();
+            $prescription = $patient->getPrescriptions();
             return $this->render('@App/Prescription/list_prescription_patient.html.twig',array('prescription'=>$prescription));
         } else {
             return $this->redirectToRoute('add_info_patient');
@@ -157,15 +205,16 @@ class PatientController extends Controller
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
+                $prescription->setStatus("En attente");
                 $em->flush();
-                $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
-                return $this->redirectToRoute('homepage');
+                $request->getSession()->getFlashBag()->add('notice', 'Pharmacie ajoutée avec succès ');
+                return $this->redirectToRoute('list_prescription_patient');
             }
             return $this->render('@App/Prescription/add_prescription.html.twig', array(
                 'form' => $form->createView(),
             ));
         } else {
-            return $this->redirectToRoute('info_patient');
+            return $this->redirectToRoute('homepage');
         }
 
     }
@@ -176,8 +225,15 @@ class PatientController extends Controller
      */
     public function listPrescriptionMedication(Prescription $prescription)
     {
-        $prescriptionMedication = $prescription->getPrescriptionMedication();
-        return $this->render('@App/Prescription/list_prescription_medication_patient.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
+        $user = $this->getUser();
+        $patient = $prescription->getPatient();
+        $userPatient = $patient->getUser();
+        if ($user === $userPatient) {
+            $prescriptionMedication = $prescription->getPrescriptionMedication();
+            return $this->render('@App/Prescription/list_prescription_medication_patient.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
+        } else{
+            return $this->redirectToRoute('homepage');
+        }
     }
 
     /**
@@ -189,13 +245,10 @@ class PatientController extends Controller
 
         $term = $request->query->get('term');
         $userId = $this->getUser()->getId();
-
-
         $repository = $this->getDoctrine()->getRepository(Prescription::class);
         $patient = $this->getDoctrine()->getRepository(Patient::class)->findOneBy(["user" => $userId]);
         $patientId = $patient->getId();
         $prescriptions = $repository->searchPrescriptions($term, 'patient', $patientId);
-
         return $this->render('@App/Prescription/search.html.twig',array(
             'prescriptions'=>$prescriptions
         ));

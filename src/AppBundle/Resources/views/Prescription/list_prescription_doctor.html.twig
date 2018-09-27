@@ -195,12 +195,13 @@
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Status
                 </button>
+
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'canceled'}) }}">Annulée</a>
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'ongoing'}) }}">En cours de traitement</a>
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'delivred'}) }}">Livrée</a>#}
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'pending'}) }}">Non Confirmé</a>
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'success'}) }}">Confirmé</a>
+                    <a class="dropdown-item" href="{{ path('doctor_prescriptions_by_status', {'status': 'canceled'}) }}">Annulée</a>
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'ongoing'}) }}">En cours de traitement</a>#}
+                    <a class="dropdown-item" href="{{ path('doctor_prescriptions_by_status', {'status': 'delivred'}) }}">En attente</a>
+                    <a class="dropdown-item" href="{{ path('doctor_prescriptions_by_status', {'status': 'pending'}) }}">Non Confirmée</a>
+                    <a class="dropdown-item" href="{{ path('doctor_prescriptions_by_status', {'status': 'success'}) }}">Confirmée</a>
                 </div>
             </div>
         </nav>
@@ -225,22 +226,23 @@
                         {% if  prescription.pharmacy  is defined and  prescription.pharmacy is not null %}
                             <th>{{ prescription.pharmacy.namePharmacy }}</th>
                         {% else %}
-                            <th>choisir une pharmacie</th>
+                            <th>Non choisie</th>
                         {% endif %}
                         <th>{{ prescription.doctor.user.firstName }} {{ prescription.doctor.user.name }}</th>
                         <th>{{ prescription.dateAdd|date("d/m/Y")  }}</th>
                         <th>
-                            {% if prescription.status == "Non confirmé" %}
+                            {% if prescription.status == "Non confirmée" %}
                                 <span class="badge badge-warning">{{ prescription.status }}</span>
                             {% elseif prescription.status == "Annulée" %}
                                 <span class="badge badge-danger">{{ prescription.status }}</span>
-                            {% elseif prescription.status == "Livrée" %}
+                            {% elseif prescription.status == "En attente" %}
                                 <span class="badge badge-primary">{{ prescription.status }}</span>
-                            {% elseif prescription.status == "Confirmé" %}
+                            {% elseif prescription.status == "Confirmée" %}
                                 <span class="badge badge-success">{{ prescription.status }}</span>
                             {% endif %}
                         </th>
-                        <th><a href="{{ path('list_priscription_medication_doctor',{ id:prescription.id}) }}" class="show-prescription" data-target="#prescription">Visualiser l'ordonnance</a></th>
+                        <th><a href="{{ path('list_priscription_medication_doctor',{ id:prescription.id}) }}">Visualiser l'ordonnance</a></th>
+                        <th><a href="{{ path('delete_prescription',{ id:prescription.id}) }}" class=" show-prescription">Supprimé l'ordonnance</a></th>
                     </tr>
                 {% endfor %}
                 </tbody>

@@ -3,11 +3,11 @@ security:
     encoders:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
-    role_hierarchy:
-        ROLE_DOCTOR: [ROLE_DOCTOR]
-        ROLE_PHARMACY: [ROLE_PHARMACY]
-        ROLE_SUPPLIER: [ROLE_SUPPLIER]
-        ROLE_ADMIN: [ROLE_DOCTOR, ROLE_PATIENT,ROLE_PHARMACY,ROLE_SUPPLIER, ROLE_ALLOWED_TO_SWITCH]
+#    role_hierarchy:
+#        ROLE_DOCTOR: [ROLE_DOCTOR]
+#        ROLE_PHARMACY: [ROLE_PHARMACY]
+#        ROLE_SUPPLIER: [ROLE_SUPPLIER]
+#        ROLE_ADMIN: [ROLE_DOCTOR, ROLE_PATIENT,ROLE_PHARMACY,ROLE_SUPPLIER, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         fos_userbundle:
@@ -24,13 +24,14 @@ security:
                 path: fos_user_security_logout
                 target: homepage
             anonymous:    true
+            access_denied_handler: AppBundle\Security\AccessDeniedHandler
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_ADMIN }
-        - { path: ^/patient/, role: ROLE_USER }
-        - { path: ^/doctor/, role: ROLE_DOCTOR }
-        - { path: ^/pharmacy/, role: ROLE_PHARMACY}
-        - { path: ^/supplier/, role: ROLE_SUPPLIER }
+#        - { path: ^/admin/, role: ROLE_ADMIN }
+#        - { path: ^/patient/, role: ROLE_USER }
+#        - { path: ^/doctor/, role: ROLE_DOCTOR }
+#        - { path: ^/pharmacy/, role: ROLE_PHARMACY}
+#        - { path: ^/supplier/, role: ROLE_SUPPLIER }

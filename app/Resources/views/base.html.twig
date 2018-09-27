@@ -23,10 +23,14 @@
     <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light">
                 <div class="container">
-                <a class="navbar-brand logo_h" href="{{ path('homepage') }}"><img src="{{ asset('template/img/MainLogo.png') }}"  alt="logo"></a>
+                <a class="navbar-brand logo_h" href="{{ path('homepage') }}"><img src="{{ asset('template/img/MainLogo.png') }}"  alt="logo" class="logo-name"></a>
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#user" aria-controls="user" aria-expanded="false" aria-label="Toggle navigation">
-                        <img src="{{ asset('upload/picture_user/default_picture.png') }}" class="picture-user" alt="user">
+                        {% if app.user.media is defined and app.user.media is not null %}
+                            <img src="{{ asset(app.user.media.path) }}" class="picture-user" alt="user">
+                        {% else %}
+                            <img src="{{ asset('upload/picture_user/default_picture.png') }}" class="picture-user" alt="user">
+                        {% endif %}
                     </button>
                     {% else %}
                     <button class="navbar-toggler" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +58,7 @@
                                 <li class="nav-item"><a class="nav-link" href="{{ path('add_info_supplier') }}">PROFIL FOURNISSEUR</a></li>
                             {% endif %}
                             <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mot de passe</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ path('edit_media_patient') }}">Changer l'image</a></li>
                             <li class="nav-item"><a href="{{ path('fos_user_security_logout') }}" class="nav-link" >{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                         </ul>
                     </div>
@@ -73,7 +78,7 @@
                             <li class="nav-item submenu dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Gestion des ordonnances</a>
                                 <ul class="dropdown-menu">
-                                    <li class="nav-item"><a class="nav-link" href="{{ path('add_prescription') }}">Ajouté une ordonnances</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="{{ path('add_prescription') }}">Ajouter une ordonnances</a></li>
                                     <li class="nav-item"><a class="nav-link" href="{{ path('list_prescription_doctor') }}">Liste des Ordonnances</a></li>
                                 </ul>
                             </li>
@@ -91,7 +96,11 @@
                             <ul class="nav navbar-nav menu_nav ml-auto">
                                 <li class="nav-item submenu dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                        <img src="{{ asset('upload/picture_user/default_picture.png') }}" class="picture-user" alt="user">
+                                        {% if app.user.media is defined and app.user.media is not null %}
+                                            <img src="{{ asset(app.user.media.path) }}" class="picture-user" alt="user">
+                                        {% else %}
+                                            <img src="{{ asset('upload/picture_user/default_picture.png') }}" class="picture-user" alt="user">
+                                        {% endif %}
                                     </a>
                                     <ul class="nav navbar-nav  menu_nav ml-auto">
                                         <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_profile_edit') }}">{{ app.user.username }}</a></li>
@@ -106,6 +115,7 @@
                                             <li class="nav-item"><a class="nav-link" href="{{ path('add_info_supplier') }}">PROFIL FOURNISSEUR</a></li>
                                         {% endif %}
                                         <li class="nav-item"><a class="nav-link" href="{{ path('fos_user_change_password') }}">Changer mot de passe</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="{{ path('edit_media_patient') }}">Changer l'image</a></li>
                                         <li class="nav-item"><a href="{{ path('fos_user_security_logout') }}" class="nav-link" >{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                                     </ul>
                                 </li>
@@ -125,9 +135,25 @@
 
 
 
-<div class="container-fluid content-body">
-{% block body %}
 
+
+
+
+<div class="container-fluid content-body">
+
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+    <div class='modal fade modal-message-flash' id='modal-infos' data-backdrop='false'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-body'>
+                    <button type='button' class='close' data-dismiss='modal'>x</button>
+                    <h3 class='modal-title title-message-error' style="color: #551a8b">{{ flashMessage }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% block body1 %}
     <section class="home_banner_area">
         <div class="banner_inner d-flex align-items-center">
             <div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
@@ -216,9 +242,6 @@
                     <p>Faites-nous confiance. Nous lisons tous les emails .</p>
                     <div id="mc_embed_signup">
                         <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="subscribe_form relative">
-                            <div >
-                                <input name="EMAIL" placeholder="Votre adresse email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Votre adresse email'" required="" type="email">
-                            </div>
                             <div class="input-group d-flex flex-row">
                                 <input name="TEXT" placeholder="Votre message" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Votre message '" required="" type="text">
                                 <button class="btn sub-btn"><span class="lnr lnr-arrow-right"></span></button>
@@ -247,6 +270,7 @@
 <script src="{{ asset('template/js/popper.js') }}"></script>
 <script src="{{ asset('template/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('template/js/theme.js') }}"></script>
+    <script src="{{ asset('template/js/modal-flash.js') }}"></script>
     <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 {% endblock %}

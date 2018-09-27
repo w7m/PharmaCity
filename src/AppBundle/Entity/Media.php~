@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="media")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MediaRepository")
- * @ORM\HasLifecycleCallbacks
+ * @ORM\HasLifecycleCallbacks()
  */
 class Media
 {
@@ -37,14 +37,19 @@ class Media
      * @Assert\File(
      *     maxSize = "1024k",
      *     maxSizeMessage="s'il vous plaît upload un image de taille max : 1M.",
-     *     mimeTypes = {"image/jpeg"},
+     *     mimeTypes = {"image/jpeg","image/png"},
      *     mimeTypesMessage = "l'extension de l'image doit de type jpg."
      * )
-     * @Assert\NotBlank(message="Veuillez insérer un fichier")
      */
     private $file;
 
     private $fileName;
+
+
+    /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
+     */
+    private $user;
 
     public function getId()
     {
@@ -63,12 +68,6 @@ class Media
 
         return $this;
     }
-
-    /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\User")
-     */
-    private $user;
-
     /**
      * Get alt
      *
@@ -117,21 +116,57 @@ class Media
         $this->file = $file;
     }
     /**
-     * @ORM\PrePersist
+     * @ORM\PrePersist()
      */
     public function hydrateObject()
     {
-        $this->setAlt("xxxxxxxx");
+        if (file_exists($this->file)){
         $this->fileName = md5(uniqid()).".".$this->file->guessExtension();
         $this->setPath("upload/picture_user/".$this->fileName);
+        $this->setAlt("user");
+        } else {
+
+            $this->setPath("upload/picture_user/default_picture.png");
+            $this->setAlt("user");
+        }
     }
 
+
+    public function UpdateObject()
+    {
+        if (file_exists($this->file)){
+            $this->fileName = md5(uniqid()).".".$this->file->guessExtension();
+
+            $this->setPath("upload/picture_user/".$this->fileName);
+            $this->setAlt("user");
+        } else {
+
+            return;
+        }
+    }
+
+
+
     /**
-     * @ORM\PostPersist
+     * @ORM\PostPersist()
      */
     public function uploadFile()
     {
+        if (file_exists($this->file)){
         $this->file->move($GLOBALS['kernel']->getContainer()->getParameter('user_media'),$this->fileName);
+        } else {
+            return;
+        }
+    }
+
+    public function uploadUpdateFile()
+    {
+
+        if (file_exists($this->file)){
+            $this->file->move($GLOBALS['kernel']->getContainer()->getParameter('user_media'),$this->fileName);
+        } else {
+            return;
+        }
     }
 
     /**
@@ -147,29 +182,5 @@ class Media
     public function removeFile()
     {
         unlink(__DIR__."/../../../.."."/web/".$this->fileName);
-    }
-
-    /**
-     * Set user
-     *
-     * @param \AppBundle\Entity\User $user
-     *
-     * @return Media
-     */
-    public function setUser(\AppBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \AppBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 }

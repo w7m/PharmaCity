@@ -39,7 +39,6 @@
 
 
 {#{% extends '@App/layout.html.twig' %}#}
-
 {#{% block body %}#}
     {#{% if prescription  is empty %}#}
         {#<h4>Aucune ordonnance n'a été trouvée</h4>#}
@@ -65,9 +64,6 @@
             {#</div>#}
         {#</div>#}
     {#{% endblock %}#}
-
-
-
 
 
     {#<div class="container list-container">#}
@@ -197,11 +193,11 @@
                     Status
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'canceled'}) }}">Annulée</a>
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'ongoing'}) }}">En cours de traitement</a>
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'delivred'}) }}">Livrée</a>#}
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'pending'}) }}">Non Confirmé</a>
-                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'success'}) }}">Confirmé</a>
+                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'canceled'}) }}">Annulée</a>
+                    {#<a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'ongoing'}) }}">En cours de traitement</a>#}
+                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'delivred'}) }}">En attente</a>
+                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'pending'}) }}">Non Confirmée</a>
+                    <a class="dropdown-item" href="{{ path('patient_prescriptions_by_status', {'status': 'success'}) }}">Confirmée</a>
                 </div>
             </div>
         </nav>
@@ -223,21 +219,27 @@
                     <tr>
                         <th scope="row">{{ prescription.reference }}</th>
                         <th>{{ prescription.patient.user.firstName }} {{ prescription.patient.user.name }}</th>
-                        {% if  prescription.pharmacy  is defined and  prescription.pharmacy is not null %}
-                            <th>{{ prescription.pharmacy.namePharmacy }}</th>
-                        {% else %}
-                            <th><a href="{{ path('add_pharmacy_to_prescription',{ id:prescription.id}) }}" class="" >Choisir une pharmacie</a></th>
-                        {% endif %}
+
+
+                            {% if prescription.status == "Non confirmée" %}
+                                <th><a href="{{ path('add_pharmacy_to_prescription',{ id:prescription.id}) }}" class="" >Choisir une pharmacie</a></th>
+                            {% elseif prescription.status == "Annulée" %}
+                                <th><a href="{{ path('add_pharmacy_to_prescription',{ id:prescription.id}) }}" class="" >Choisir une pharmacie</a></th>
+                            {% elseif prescription.status == "En attente" %}
+                                <th>{{ prescription.pharmacy.namePharmacy }}</th>
+                            {% elseif prescription.status == "Confirmée" %}
+                                <th>{{ prescription.pharmacy.namePharmacy }}</th>
+                            {% endif %}
                         <th>{{ prescription.doctor.user }} {{ prescription.doctor.user.name }}</th>
                         <th>{{ prescription.dateAdd|date("d/m/Y")  }}</th>
                         <th>
-                            {% if prescription.status == "Non confirmé" %}
+                            {% if prescription.status == "Non confirmée" %}
                                 <span class="badge badge-warning">{{ prescription.status }}</span>
                             {% elseif prescription.status == "Annulée" %}
                                 <span class="badge badge-danger">{{ prescription.status }}</span>
-                            {% elseif prescription.status == "Livrée" %}
+                            {% elseif prescription.status == "En attente" %}
                                 <span class="badge badge-primary">{{ prescription.status }}</span>
-                            {% elseif prescription.status == "Confirmé" %}
+                            {% elseif prescription.status == "Confirmée" %}
                                 <span class="badge badge-success">{{ prescription.status }}</span>
                             {% endif %}
                         </th>
@@ -291,3 +293,7 @@
         });
     </script>
 {% endblock %}
+
+
+
+

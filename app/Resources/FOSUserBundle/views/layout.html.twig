@@ -1,12 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
+{% block body1 %}
 
     {% if app.request.hasPreviousSession %}
         {% for type, messages in app.session.flashbag.all() %}
             {% for message in messages %}
-                <div class="flash-{{ type }}">
-                    {{ message }}
+
+                <div class='modal fade modal-message-flash' id='modal-infos' data-backdrop='false'>
+                    <div class='modal-dialog'>
+                        <div class='modal-content'>
+                            <div class='modal-body'>
+                                <button type='button' class='close' data-dismiss='modal'>x</button>
+                                <h3 class='modal-title title-message-error' style="color: #551a8b">
+                                    <div class="flash-{{ type }}">
+                                        {{ message }}
+                                    </div></h3>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         {% endfor %}

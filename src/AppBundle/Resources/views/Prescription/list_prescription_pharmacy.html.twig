@@ -187,13 +187,13 @@
                         <th>{{ prescription.doctor.user }} {{ prescription.doctor.user.name }}</th>
                         <th>{{ prescription.dateAdd|date("d/m/Y")  }}</th>
                         <th>
-                            {% if prescription.status == "Non confirmé" %}
+                            {% if prescription.status == "Non confirmée" %}
                                 <span class="badge badge-warning">{{ prescription.status }}</span>
                             {% elseif prescription.status == "Annulée" %}
                                 <span class="badge badge-danger">{{ prescription.status }}</span>
-                            {% elseif prescription.status == "Livrée" %}
+                            {% elseif prescription.status == "En attente" %}
                                 <span class="badge badge-primary">{{ prescription.status }}</span>
-                            {% elseif prescription.status == "Confirmé" %}
+                            {% elseif prescription.status == "Confirmée" %}
                                 <span class="badge badge-success">{{ prescription.status }}</span>
                             {% endif %}
                         </th>

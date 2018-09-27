@@ -28,7 +28,6 @@ class Patient
      *
      * @ORM\Column(name="Date_birth", type="date")
      * @Assert\NotBlank(message="Veuillez remplir ce champs")
-     * @Assert\Date(message="Veuillez entrer une date valid")
      * @ORM\Column(name="datebirth", type="datetime")
      */
     private $dateBirth;
@@ -181,7 +180,7 @@ class Patient
      */
     public function __construct()
     {
-        $this->prescription = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->prescriptions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -191,7 +190,7 @@ class Patient
      *
      * @return Patient
      */
-    public function addPrescription(\AppBundle\Entity\Prescription $prescription)
+    public function addPrescriptions(\AppBundle\Entity\Prescription $prescription)
     {
         $this->prescriptions[] = $prescription;
 
@@ -203,9 +202,9 @@ class Patient
      *
      * @param \AppBundle\Entity\Prescription $prescription
      */
-    public function removePrescription(\AppBundle\Entity\Prescription $prescription)
+    public function removePrescriptions(\AppBundle\Entity\Prescription $prescription)
     {
-        $this->prescription->removeElement($prescription);
+        $this->prescriptions->removeElement($prescription);
     }
 
     /**
@@ -213,7 +212,7 @@ class Patient
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPrescription()
+    public function getPrescriptions()
     {
         return $this->prescriptions;
     }

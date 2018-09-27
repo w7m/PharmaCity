@@ -61,7 +61,6 @@ class DoctorController extends Controller
             ));
         }
     }
-
     /**
      * @Route("/editinfo", name="edit_info_doctor")
      * @Security("has_role('ROLE_DOCTOR')")
@@ -91,6 +90,7 @@ class DoctorController extends Controller
 
     }
 
+
     /**
      * @Route("/addprescription", name="add_prescription")
      * @Security("has_role('ROLE_DOCTOR')")
@@ -111,6 +111,7 @@ class DoctorController extends Controller
 
                 $prescription->setDoctor($doctor);
                 $session->set('prescription',$prescription);
+                $prescription->setStatus("Non confirmée");
                 $em->persist($prescription);
                 $em->flush();
                 $request->getSession()->getFlashBag()->add('notice', 'Information a bien été ajoutée.');
@@ -163,19 +164,16 @@ class DoctorController extends Controller
         $userId = $this->getUser()->getId();
         switch ($status) {
             case 'pending':
-                $status = 'Non confirmé';
+                $status = 'Non confirmée';
                 break;
             case 'ongoing':
-                $status = 'Confirmé';
+                $status = 'Confirmée';
                 break;
             case 'canceled':
                 $status = 'Annulée';
                 break;
             case 'delivred':
-                $status = 'Livrée';
-                break;
-            case 'success':
-                $status = 'Confirmé';
+                $status = 'En attente';
                 break;
         }
         $doctor = $this->getDoctrine()->getRepository(Doctor::class)->findOneBy(["user" => $userId]);
@@ -191,7 +189,6 @@ class DoctorController extends Controller
             return $this->redirectToRoute('add_info_doctor');
         }
     }
-
 
 
     /**
@@ -222,7 +219,6 @@ class DoctorController extends Controller
     {
         $prescriptionMedication = $prescription->getPrescriptionMedication();
         return $this->render('@App/Prescription/list_prescription_medication_doctor.html.twig',array('prescriptionMedication'=>$prescriptionMedication));
-
     }
 
     /**
@@ -266,7 +262,7 @@ class DoctorController extends Controller
      * @Route("/deleteprescription/{id}", name="delete_prescription")
      * @Security("has_role('ROLE_DOCTOR')")
      */
-    public function deletePrescriptionAction(Prescription $prescription)
+    public function deletePrescriptionAction(Request $request, Prescription $prescription)
     {
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
@@ -277,6 +273,7 @@ class DoctorController extends Controller
             if ($doctorPrescription === $doctor){
                 $em->remove($prescription);
                 $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Information a bien été supprimée.');
                 return $this->redirectToRoute('list_prescription_doctor');
             } else {
                 return $this->redirectToRoute('list_prescription_doctor');
@@ -298,8 +295,6 @@ class DoctorController extends Controller
 
         $term = $request->query->get('term');
         $userId = $this->getUser()->getId();
-
-
         $repository = $this->getDoctrine()->getRepository(Prescription::class);
         $doctor = $this->getDoctrine()->getRepository(Doctor::class)->findOneBy(["user" => $userId]);
         $doctorId = $doctor->getId();
